@@ -192,10 +192,16 @@
     <span id="intro-caret"></span>
 <!-- NEW: Video animation that plays after typing -->
 <div id="transition-animation">
-  <video id="runner-video" autoplay muted>
-    <source src="runneranimation.mp4" type="video/mp4">
-    Your browser does not support the video tag.
-  </video>
+ <video
+  id="runner-video"
+  autoplay
+  muted
+  playsinline
+  preload="auto"
+  style="width:100%;height:100%;object-fit:cover;">
+  <source src="runneranimation.mp4" type="video/mp4">
+</video>
+
   <div class="entering-text">
     Entering the courtroom...
   </div>
