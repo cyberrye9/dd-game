@@ -989,7 +989,6 @@ header .foot{
   <div id="transition-animation">
 <video id="runner-video" muted playsinline preload="auto">
 <source src="./runneranimation.mp4" type="video/mp4">
-      Your browser does not support the video tag.
     </video>
   </div>
 </div>
@@ -1904,36 +1903,36 @@ if (videoEl) {
 function blockKeys(e) {
   const blocked = ['Enter', ' ', 'Spacebar', 'Escape', 'ArrowRight'];
   if (blocked.includes(e.key)) e.preventDefault();
-}
-// Handle start button click
-  document.addEventListener('DOMContentLoaded', () => {
-    const startBtn = document.getElementById("video-start-btn");
-    const video = document.getElementById("runner-video");
-    const overlay = document.getElementById("typing-intro");
-    const animationEl = document.getElementById("transition-animation");
-    
-    if (startBtn) {
-      startBtn.addEventListener('click', () => {
-        startBtn.style.display = 'none';
-     // Set up video event listener
-        video.addEventListener('ended', () => {
-          overlay.classList.add("fade-out");
-          
-          setTimeout(() => {
-            overlay.style.display = 'none';  // ADD THIS LINE
-            const introModal = document.getElementById('intro');
-            if (introModal) {
-              introModal.style.display = 'flex';
-            }
-          }, 150);
-        }, { once: true });
-        // Start video
-        animationEl.classList.add("show-animation");
-        video.playbackRate = 2.0;
-        video.play();
-      });
-    }
-  });
+}document.addEventListener('DOMContentLoaded', () => {
+  const startBtn = document.getElementById("video-start-btn");
+  const video = document.getElementById("runner-video");
+  const overlay = document.getElementById("typing-intro");
+  const animationEl = document.getElementById("transition-animation");
+
+  function enterGame() {
+    overlay.classList.add("fade-out");
+    setTimeout(() => {
+      overlay.style.display = "none";
+      const introModal = document.getElementById('intro');
+      if (introModal) introModal.style.display = 'flex';
+    }, 150);
+  }
+
+  function startSequence() {
+    startBtn.style.display = 'none';
+    animationEl.classList.add("show-animation");
+    video.playbackRate = 2.0;
+
+    // If video works → wait for end
+    video.addEventListener('ended', enterGame, { once: true });
+
+    // If video fails → skip it and enter game
+    video.play().catch(enterGame);
+  }
+
+  if (startBtn) startBtn.addEventListener('click', startSequence);
+});
+
 </script>
 
 <button id="video-start-btn">Start Game</button>
