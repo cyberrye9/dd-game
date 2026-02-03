@@ -1888,61 +1888,58 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 })();
 </script>
-
 <script>
 const videoEl = document.getElementById('runner-video');
-if (videoEl) {
-  videoEl.addEventListener('play', () => {
-    window.addEventListener('keydown', blockKeys, true);
-  });
-  videoEl.addEventListener('ended', () => {
-    window.removeEventListener('keydown', blockKeys, true);
-  });
-}
-
-function blockKeys(e) {
-  const blocked = ['Enter', ' ', 'Spacebar', 'Escape', 'ArrowRight'];
-  if (blocked.includes(e.key)) e.preventDefault();
-}
+...
 <script>
-document.addEventListener('DOMContentLoaded', () => {
-  const startBtn = document.getElementById('video-start-btn');
-  const video = document.getElementById('runner-video');
-  const overlay = document.getElementById('typing-intro');
-  const animationEl = document.getElementById('transition-animation');
+  // Block keys only while the runner video is playing
+  function blockKeys(e) {
+    const blocked = ['Enter', ' ', 'Spacebar', 'Escape', 'ArrowRight'];
+    if (blocked.includes(e.key)) e.preventDefault();
+  }
 
-  if (!startBtn || !video || !overlay || !animationEl) return;
+  document.addEventListener('DOMContentLoaded', () => {
+    const startBtn = document.getElementById('video-start-btn');
+    const video = document.getElementById('runner-video');
+    const overlay = document.getElementById('typing-intro');
+    const animationEl = document.getElementById('transition-animation');
 
-  startBtn.addEventListener('click', () => {
-    startBtn.style.display = 'none';
+    if (!startBtn || !video || !overlay || !animationEl) return;
 
-    animationEl.classList.add('show-animation');
+    // Attach keyblocker only during playback
+    video.addEventListener('play', () => {
+      window.addEventListener('keydown', blockKeys, true);
+    });
+    video.addEventListener('ended', () => {
+      window.removeEventListener('keydown', blockKeys, true);
+    });
 
-    // If you want 2x speed
-    video.playbackRate = 2.0;
+    startBtn.addEventListener('click', () => {
+      startBtn.style.display = 'none';
+      animationEl.classList.add('show-animation');
 
-    // Don’t call load() unless you actually need it; it can reset state.
-    // video.load();
+      // 2x speed if you want it
+      video.playbackRate = 2.0;
 
-    const onEnded = () => {
-      overlay.classList.add('fade-out');
+      const onEnded = () => {
+        overlay.classList.add('fade-out');
 
-      // show your intro modal
-      const introModal = document.getElementById('intro');
-      if (introModal) introModal.style.display = 'flex';
+        // show your intro modal after the animation
+        const introModal = document.getElementById('intro');
+        if (introModal) introModal.style.display = 'flex';
 
-      video.removeEventListener('ended', onEnded);
-    };
-    video.addEventListener('ended', onEnded);
+        video.removeEventListener('ended', onEnded);
+      };
 
-    video.play().catch(err => {
-      console.error('Video play failed:', err);
-      // common reasons: missing file path, not served over http(s), codec issue
-      alert('Video could not play. Open DevTools Console to see why.');
-      startBtn.style.display = 'block';
+      video.addEventListener('ended', onEnded);
+
+      video.play().catch(err => {
+        console.error('Video play failed:', err);
+        alert('Video could not play. Open DevTools Console to see why.');
+        startBtn.style.display = 'block';
+      });
     });
   });
-});
 </script>
 
 </body>
