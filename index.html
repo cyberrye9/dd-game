@@ -996,7 +996,7 @@ header .foot{
 </div>
 
 <button id="video-start-btn" type="button">Start Game</button>
-
+</div>
 
   <header>
     <h1>Dungeons and Deliberations</h1>
@@ -1904,42 +1904,46 @@ function blockKeys(e) {
   const blocked = ['Enter', ' ', 'Spacebar', 'Escape', 'ArrowRight'];
   if (blocked.includes(e.key)) e.preventDefault();
 }
-// Handle start button click
-  document.addEventListener('DOMContentLoaded', () => {
-    const startBtn = document.getElementById("video-start-btn");
-    const video = document.getElementById("runner-video");
-    const overlay = document.getElementById("typing-intro");
-    const animationEl = document.getElementById("transition-animation");
-    
-    if (startBtn) {
-      startBtn.addEventListener('click', () => {
-        startBtn.style.display = 'none';
-     // Set up video event listener
-        video.addEventListener('ended', () => {
-          overlay.classList.add("fade-out");
-          
-          setTimeout(() => {
-            overlay.style.display = 'none';  // ADD THIS LINE
-            const introModal = document.getElementById('intro');
-            if (introModal) {
-              introModal.style.display = 'flex';
-            }
-          }, 150);
-        }, { once: true });
-        // Start video
-        animationEl.classList.add("show-animation");
-       video.playbackRate = 2.0;
-video.load(); // force source refresh (important on Pages)
-video.play().catch(err => {
-  console.error("Video play failed:", err);
-  alert("Video couldn't play. Check the console + direct MP4 URL.");
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const startBtn = document.getElementById('video-start-btn');
+  const video = document.getElementById('runner-video');
+  const overlay = document.getElementById('typing-intro');
+  const animationEl = document.getElementById('transition-animation');
 
-      });
-    }
+  if (!startBtn || !video || !overlay || !animationEl) return;
+
+  startBtn.addEventListener('click', () => {
+    startBtn.style.display = 'none';
+
+    animationEl.classList.add('show-animation');
+
+    // If you want 2x speed
+    video.playbackRate = 2.0;
+
+    // Don’t call load() unless you actually need it; it can reset state.
+    // video.load();
+
+    const onEnded = () => {
+      overlay.classList.add('fade-out');
+
+      // show your intro modal
+      const introModal = document.getElementById('intro');
+      if (introModal) introModal.style.display = 'flex';
+
+      video.removeEventListener('ended', onEnded);
+    };
+    video.addEventListener('ended', onEnded);
+
+    video.play().catch(err => {
+      console.error('Video play failed:', err);
+      // common reasons: missing file path, not served over http(s), codec issue
+      alert('Video could not play. Open DevTools Console to see why.');
+      startBtn.style.display = 'block';
+    });
   });
+});
 </script>
-
-<button id="video-start-btn">Start Game</button>
 
 </body>
 </html>
