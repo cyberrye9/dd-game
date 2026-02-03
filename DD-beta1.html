@@ -1,0 +1,1942 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Dungeons and Deliberations — Can you sway your fellow jurors?</title>
+<style>
+
+  /* ===== Bold Graphic Industrial Design Aesthetic ===== */
+  @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Oswald:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap');
+ :root {
+  /* DARK TERMINAL */
+  --primary: #0D0D0D;
+  --primary-dark: #000000;
+  
+  /* LIGHT PAPER */
+  --bg-light: #EFE9DC;
+  --bg-white: #F7F2E7;
+
+  /* TEXT */
+  --text-dark: #0D0D0D;
+  --text-light: #666666;
+
+  /* ACCENT */
+  --accent: #B38B2D;
+  
+  --shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+html, body { height: 100%; }
+
+body{
+  background: var(--bg-light);
+  color: var(--text-dark);
+  font-family: 'Space Mono', monospace;
+  font-size: 14px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+  /* BOLD HEADER */
+/* ===== HEADER (compact, clean, no “extra line” feeling) ===== */
+header{
+  background:#0B0C0F;
+  color:#F4F1E8;
+  padding: 22px 22px 18px;
+  text-align:center;
+  position:relative;
+
+  /* single divider line only */
+  border-bottom: 2px solid #C7A24B;
+}
+
+header h1{
+  font-family:'Bebas Neue', sans-serif;
+  font-weight:400;
+  font-size: clamp(34px, 4.4vw, 62px);
+  letter-spacing: 3px;
+  line-height: 0.95;
+  text-transform: uppercase;
+  margin: 0 0 8px 0;
+  color:#F4F1E8;
+  text-shadow: 0 2px 0 rgba(0,0,0,0.45);
+}
+
+header .tagline{
+  display:block;
+  font-family:'Space Mono', monospace;
+  font-weight:400;
+  font-size: 12px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  opacity: 0.9;
+  margin: 0;
+}
+
+/* remove the auto parentheses that can look like “extra formatting” */
+header .tagline::before,
+header .tagline::after{
+  content: none;
+}
+
+header .foot{
+  margin-top: 12px;
+  display:flex;
+  justify-content:center;
+}
+
+
+  /* SIDEBAR - WHITE PANELS */
+ .side .tabs {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    background: var(--primary);
+    border-bottom: 2px solid var(--accent);
+    flex-shrink: 0;
+  }
+
+  .side .tabs button {
+    padding: 14px;
+    background: var(--primary);
+    border: none;
+    border-right: 1px solid rgba(179, 139, 45, 0.2);
+    color: var(--text-light);
+    font-family: 'Oswald', sans-serif;
+    font-weight: 600;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    cursor: pointer;
+    transition: color 0.2s;
+  }
+
+  .side .tabs button:last-child {
+    border-right: none;
+  }
+
+  .side .tabs button.active {
+    color: var(--accent);
+  }
+  /* SEARCH BAR */
+.searchbar {
+    padding: 12px 16px;
+    background: #111317;
+    border-bottom: 1px solid rgba(179, 139, 45, 0.3);
+    flex-shrink: 0;
+  }
+
+  .searchbar {
+    padding: 12px 16px;
+    background: var(--primary);
+    border-bottom: 1px solid rgba(179, 139, 45, 0.2);
+    flex-shrink: 0;
+  }
+
+  .searchbar input {
+    width: 100%;
+    padding: 10px 14px;
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--bg-white);
+    border: 1px solid rgba(179, 139, 45, 0.3);
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    outline: none;
+  }
+
+  .searchbar input:focus {
+    border-color: var(--accent);
+  }
+
+  .searchbar input::placeholder {
+    color: var(--text-light);
+  }
+  
+  .searchbar button {
+    display: none;
+  }
+  /* CHIPS - BOLD TAGS */
+  
+.chip {
+    padding: 6px 12px;
+    background: transparent;
+    color: var(--text-light);
+    border: 1px solid rgba(179, 139, 45, 0.3);
+    font-family: 'Oswald', sans-serif;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    cursor: pointer;
+  }
+
+  .chip.active {
+    color: var(--accent);
+    border-color: var(--accent);
+  }
+  /* EVIDENCE CARDS */
+ .ev, .titem {
+    background: #1A1C21;
+    border: 2px solid rgba(179, 139, 45, 0.3);
+    border-left: 4px solid #B38B2D;
+    padding: 16px;
+    margin-bottom: 12px;
+    transition: all 0.2s ease;
+    cursor: pointer;
+  }
+
+  .ev:hover, .titem:hover {
+    background: #22252B;
+    border-color: #B38B2D;
+    box-shadow: 0 4px 12px rgba(179, 139, 45, 0.15);
+    transform: translateX(4px);
+  }
+
+  .ev h4, .titem h4 {
+    font-family: 'Oswald', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 10px;
+    color: #F7F2E7;
+  }
+
+  .ev .meta, .titem .meta {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #8A847A;
+    margin-bottom: 8px;
+  }
+
+  .ev .rate, .titem .rate {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    color: #B38B2D;
+    margin-top: 8px;
+  }
+.tactic-row{
+  display:flex;
+  align-items:center;
+  gap:14px;
+  margin-bottom:14px;
+  padding:14px 16px;
+
+  background: #111317;
+  border: 2px solid #B38B2D;
+  box-shadow: inset 0 0 20px rgba(0,0,0,0.6);
+
+  position: relative;
+}
+
+.tactic-row::before{
+  content:"TACTICAL INPUT";
+  position:absolute;
+  top:-10px;
+  left:14px;
+  background:#111317;
+  padding:2px 8px;
+
+  font-family:'Bebas Neue', sans-serif;
+  font-size:12px;
+  letter-spacing:2px;
+  color:#B38B2D;
+}
+
+.tactic-row label{
+  font-family:'Oswald', sans-serif;
+  font-weight:700;
+  letter-spacing:2px;
+  text-transform:uppercase;
+  font-size:11px;
+  color:#F7F2E7;
+}
+
+#roll-hint{
+  margin-left:auto;
+  font-family:'Space Mono', monospace;
+  font-size:11px;
+  color:#B38B2D;
+  opacity:0.9;
+}
+
+
+  /* CHAT AREA */
+  .chat {
+    background: var(--bg-light);
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* JUROR CARD - BOLD HEADER */
+ .juror-card{
+  background:#111317;              /* dark HUD */
+  color:#F7F2E7;                   /* readable “paper white” */
+  padding:30px;
+  border-bottom:4px solid #0B0C0F;
+}
+
+.juror-card h4{ color:#F7F2E7; }
+.juror-card p{ color: rgba(247,242,231,0.82); }
+
+  /* AVATAR - BOLD CIRCLE */
+  .avatar {
+    width: 60px;
+    height: 60px;
+    background: var(--primary);
+    border: 4px solid var(--bg-white);
+    border-radius: 50%;
+    color: var(--bg-white);
+    font-family: 'Bebas Neue', sans-serif;
+    font-weight: 400;
+    font-size: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: var(--shadow-lg);
+    transition: all 0.3s ease;
+  }
+
+  .avatar:hover {
+    transform: scale(1.15) rotate(-5deg);
+  }
+
+  /* METER - CHUNKY BAR */
+  .meter {
+    height: 16px;
+    background: rgba(255,255,255,0.2);
+    border: 3px solid var(--bg-white);
+    overflow: hidden;
+    margin-top: 16px;
+  }
+
+  .meter > span {
+    display: block;
+    height: 100%;
+    background: var(--primary);
+    transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+  }
+
+  /* HUD - GRID LAYOUT */
+  .hud {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 20px;
+  }
+
+  /* BADGES - DISTINCT FUNCTIONAL STYLING */
+.badge{
+  background:#0B0C0F;
+  color:#F7F2E7;
+  border:3px solid #B38B2D;   /* brass frame */
+  box-shadow: var(--shadow);
+  text-align:center;
+}
+
+.badge.bad{
+  background:#0B0C0F;
+  color:#F7F2E7;
+  border-color:#B42318;       /* danger rim only */
+}
+
+
+  /* CHAT MESSAGES - SPEECH BUBBLES */
+  .msg {
+    padding: 16px 20px;
+    margin: 12px 20px;
+    max-width: 75%;
+    font-family: 'Space Mono', monospace;
+    font-size: 13px;
+    line-height: 1.6;
+    position: relative;
+  }
+
+  .msg.juror {
+    border: 3px solid var(--text-dark);
+    border-left: 8px solid var(--accent-blue);
+    align-self: flex-start;
+  }
+
+  .msg.user {
+    background: var(--primary);
+    color: var(--bg-white);
+    border: 3px solid var(--primary-dark);
+    align-self: flex-end;
+  }
+
+  .msg .who {
+    font-family: 'Oswald', sans-serif;
+    font-weight: 700;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    margin-bottom: 6px;
+    opacity: 0.8;
+  }
+
+  /* COMPOSER */
+  .composer {
+    padding: 20px;
+    background: var(--bg-white);
+    border-top: 4px solid var(--text-dark);
+  }
+
+  .composer textarea {
+    width: 100%;
+    padding: 16px 20px;
+    background: var(--bg-light);
+    color: var(--text-dark);
+    border: 3px solid var(--text-dark);
+    font-family: 'Space Mono', monospace;
+    font-size: 13px;
+    line-height: 1.6;
+    resize: vertical;
+    min-height: 80px;
+    outline: none;
+    transition: all 0.2s ease;
+  }
+
+  .composer textarea:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(232, 74, 39, 0.2);
+  }
+
+  /* BUTTONS - CHUNKY AND BOLD */
+  .btn, .btn-add {
+    padding: 10px 20px;
+    background: #111317;
+    color: #F7F2E7;
+    border: 2px solid #B38B2D;
+    font-family: 'Oswald', sans-serif;
+    font-weight: 600;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    margin-top: 10px;
+  }
+
+  .btn-add:hover {
+    background: #B38B2D;
+    color: #0B0C0F;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(179, 139, 45, 0.3);
+  }
+
+  .btn:active, .btn-add:active {
+    transform: translateY(0);
+  }
+
+  .btn.secondary {
+    background: var(--bg-white);
+    color: var(--text-dark);
+    border-color: var(--text-dark);
+  }
+
+  .btn.secondary:hover {
+    background: var(--text-dark);
+    color: var(--bg-white);
+  }
+
+  /* SELECTED TAGS */
+  .tag {
+    display: inline-block;
+    padding: 8px 14px;
+    margin: 4px;
+    background: var(--primary);
+    color: var(--bg-white);
+    border: 2px solid var(--primary-dark);
+    font-family: 'Oswald', sans-serif;
+    font-weight: 600;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  /* PROGRESS DOTS - COMPACT HORIZONTAL */
+  .progress {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: center;
+    max-width: 400px;
+    margin: 0 auto;
+  }
+
+  .dot {
+    width: 18px;
+    height: 18px;
+    background: var(--bg-white);
+    border: 3px solid var(--text-dark);
+    border-radius: 50%;
+    transition: all 0.3s ease;
+  }
+
+  .dot.win {
+    background: var(--accent-green);
+    border-color: var(--accent-green);
+  }
+
+  .dot.cur {
+    background: var(--primary);
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(30, 58, 95, 0.3);
+    animation: pulse-dot 2s infinite;
+  }
+
+  @keyframes pulse-dot {
+    0%, 100% {
+      box-shadow: 0 0 0 3px rgba(30, 58, 95, 0.3);
+    }
+    50% {
+      box-shadow: 0 0 0 6px rgba(30, 58, 95, 0.1);
+    }
+  }
+
+  /* MODALS - BOLD OVERLAYS */
+  .overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(26, 26, 26, 0.95);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    animation: fadeIn 0.3s ease;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  .modal {
+    background: var(--bg-white);
+    color: var(--text-dark);
+    border: 6px solid var(--text-dark);
+    padding: 50px;
+    max-width: 700px;
+    width: 90%;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+    animation: modalSlide 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  @keyframes modalSlide {
+    from {
+      opacity: 0;
+      transform: translateY(40px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .modal h3 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 48px;
+    letter-spacing: 3px;
+    line-height: 1;
+    margin-bottom: 24px;
+    text-transform: uppercase;
+  }
+
+  .modal p {
+    font-family: 'Space Mono', monospace;
+    font-size: 14px;
+    line-height: 1.8;
+    margin-bottom: 16px;
+    color: var(--text-mid);
+  }
+
+  .modal strong {
+    color: var(--text-dark);
+    font-weight: 700;
+  }
+
+  /* TYPING INTRO - BOLD ANNOUNCEMENT */
+  #typing-intro {
+    position: fixed;
+    inset: 0;
+    background: var(--primary);
+    color: var(--bg-white);
+    font-family: 'Bebas Neue', sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+    transition: opacity 0.15s ease;
+  }
+#typing-intro.fade-out {
+    opacity: 0;
+    pointer-events: none;
+    display: none;
+  }
+  #intro-title {
+    font-size: 80px;
+    letter-spacing: 6px;
+    margin-bottom: 20px;
+    text-transform: uppercase;
+  }
+
+  #intro-sub {
+    font-family: 'Space Mono', monospace;
+    font-size: 18px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    opacity: 0.95;
+  }
+
+  #transition-animation {
+    margin-top: 50px;
+    opacity: 0;
+    transition: opacity 1.2s ease-in-out;
+  }
+
+  #transition-animation.show-animation {
+    opacity: 1;
+  }
+
+  #runner-video {
+    max-width: 1000px;
+    width: 95%;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+  }
+
+/* PANES */
+  .side .pane {
+    display: none;
+    flex: 1;
+    min-height: 0;
+  }
+
+.side .pane.active{
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: hidden;
+  height: 100%;
+}
+  /* SCROLLBAR */
+  ::-webkit-scrollbar {
+    width: 12px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: var(--bg-light);
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: var(--text-dark);
+    border: 2px solid var(--bg-light);
+  }
+.main{
+  height:100%;
+  min-height:0;
+  overflow:hidden;
+  display:flex;
+  flex-direction:column;
+}
+
+.status{ flex: 0 0 auto; }
+
+.chat{
+  flex:1;
+  min-height:0;
+  overflow-y:auto;  /* chat scrolls */
+}
+
+.composer{ flex:0 0 auto; }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--primary);
+  }
+.side {
+    background: #0B0C0F;
+    border-right: 4px solid #B38B2D;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    min-height: 0;
+    overflow: hidden;
+    box-shadow: 4px 0 20px rgba(0, 0, 0, 0.5);
+    position: relative;
+    z-index: 10;
+  }
+.evidence-list::after {
+  content: '↓ SCROLL FOR MORE ↓';
+  position: sticky;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  text-align: center;
+  padding: 12px;
+  background: linear-gradient(transparent, var(--bg-light) 40%);
+  font-family: 'Oswald', sans-serif;
+  font-size: 11px;
+  letter-spacing: 2px;
+  color: var(--text-mid);
+  pointer-events: none;
+}
+.main{
+  display:flex;
+  flex-direction:column;
+  min-height:0;
+  overflow:hidden;
+}
+
+.chat{
+  flex:1;
+  overflow-y:auto;
+  min-height:0;
+}
+
+.side{
+  display:flex;
+  flex-direction:column;
+  min-height:0;
+}
+.evidence-list{
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 16px;
+  background: var(--primary);
+}
+  /* RESPONSIVE */
+ /* DESKTOP LAYOUT: full-screen game area */
+.wrap{
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: 420px 1fr;
+  overflow: hidden;
+
+  max-width: 1600px;
+  margin: 0 auto;
+}
+
+@media (max-width: 1024px) {
+  /* KEEP SIDEBAR + GAME SIDE-BY-SIDE so nothing gets pushed offscreen */
+  .wrap{
+    grid-template-columns: 360px 1fr; /* or 340px if you want more room for the game */
+    height: calc(100vh - 96px);       /* keep the game area locked to viewport */
+    overflow: hidden;
+  }
+
+  header h1 { font-size: 48px; }
+}
+
+
+  header .foot {
+    margin-top: 24px;
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+  }
+
+  .timeline {
+    padding: 20px;
+  }
+
+  .tdate {
+    font-family: 'Oswald', sans-serif;
+    font-weight: 700;
+    color: var(--primary);
+    font-size: 14px;
+    letter-spacing: 1px;
+    margin-bottom: 6px;
+  }
+
+  .small {
+    font-size: 12px;
+    opacity: 0.9;
+  }
+
+.filters {
+    padding: 8px 16px 12px;
+    background: var(--primary);
+    border-bottom: 1px solid rgba(179, 139, 45, 0.2);
+    flex-shrink: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .composer label {
+    font-family: 'Oswald', sans-serif;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--text-mid);
+  }
+
+  .composer select {
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    padding: 8px 12px;
+    background: var(--bg-white);
+    color: var(--text-dark);
+    border: 3px solid var(--text-dark);
+    font-weight: 700;
+    text-transform: uppercase;
+    cursor: pointer;
+  }
+
+  .sel-ev {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 12px;
+    min-height: 32px;
+  }
+
+  .actions {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 16px;
+    gap: 12px;
+  }
+@media (max-width: 900px){
+  #theories .modal > div[style*="grid-template-columns: 1fr 1fr"]{
+    grid-template-columns: 1fr !important;
+  }
+}
+/* ===== Opening Statements (less brick-y, more designed) ===== */
+#theories .os-grid{
+  display:grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 28px;
+  margin-bottom: 28px;
+}
+
+#theories .os-card{
+  background: #fff;
+  border: 2px solid #111;
+  box-shadow: 0 10px 0 rgba(0,0,0,0.18);
+  overflow: hidden;
+  position: relative;
+}
+
+#theories .os-card::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  background:
+    linear-gradient(135deg, rgba(179,139,45,0.14), transparent 45%);
+}
+
+#theories .os-head{
+  padding: 18px 18px 14px;
+  border-bottom: 2px solid #111;
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap: 14px;
+}
+
+#theories .os-title{
+  font-family:'Bebas Neue', sans-serif;
+  font-size: 30px;
+  letter-spacing: 2px;
+  margin: 0;
+  color:#111;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+#theories .os-tags{
+  display:flex;
+  flex-wrap:wrap;
+  gap: 8px;
+  justify-content:flex-end;
+  margin-top: 2px;
+}
+
+#theories .os-tag{
+  font-family:'Oswald', sans-serif;
+  font-weight: 700;
+  font-size: 10px;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  padding: 6px 10px;
+  border: 2px solid #111;
+  background: #F7F2E7;
+  color:#111;
+  white-space: nowrap;
+}
+
+#theories .os-tag.dark{
+  background:#111317;
+  color:#F7F2E7;
+  border-color:#111;
+}
+
+#theories .os-summary{
+  margin: 16px 18px 14px;
+  padding: 14px 14px 12px;
+  border: 2px solid #111;
+  background: #EFE9DC;
+}
+
+#theories .os-summary .kicker{
+  font-family:'Oswald', sans-serif;
+  font-weight: 800;
+  font-size: 11px;
+  letter-spacing: 1.6px;
+  text-transform: uppercase;
+  margin: 0 0 8px 0;
+  color:#111;
+}
+
+#theories .os-summary p{
+  margin: 0;
+  font-family:'Space Mono', monospace;
+  font-size: 12px;
+  line-height: 1.65;
+  color: #0D0D0D;
+}
+
+#theories .os-body{
+  padding: 0 18px 18px;
+}
+
+#theories .os-body p{
+  margin: 0 0 14px 0;
+  font-size: 13px;
+  line-height: 1.9;
+  color: var(--text-dark);
+}
+
+#theories .os-body p:last-child{
+  margin-bottom: 0;
+}
+
+#theories .os-quote{
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 2px dashed rgba(0,0,0,0.35);
+  font-style: italic;
+  color: var(--text-mid);
+  font-size: 12px;
+}
+
+/* keep your existing mobile rule, but make sure cards go single-column too */
+@media (max-width: 900px){
+  #theories .os-grid{
+    grid-template-columns: 1fr !important;
+  }
+}
+#typing-intro{
+  cursor: pointer;
+}
+
+/* START BUTTON OVERLAY */
+  #video-start-btn {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 10001;
+    padding: 20px 40px;
+    background: var(--accent);
+    border: 3px solid var(--primary);
+    color: var(--primary);
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 32px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    cursor: pointer;
+    box-shadow: 0 8px 24px rgba(179, 139, 45, 0.4);
+    transition: all 0.3s ease;
+  }
+
+  #video-start-btn:hover {
+    background: #C7A24B;
+    transform: translate(-50%, -50%) scale(1.05);
+    box-shadow: 0 12px 32px rgba(179, 139, 45, 0.6);
+  }
+
+  #video-start-btn:active {
+    transform: translate(-50%, -50%) scale(0.98);
+  }
+
+</style>
+</head>
+<body>
+<!-- Fullscreen Intro Typing Screen -->
+<div id="typing-intro">
+  <h1 id="intro-title"></h1>
+  <h2 id="intro-sub"></h2>
+  <div id="transition-animation">
+<video id="runner-video" muted playsinline preload="auto">
+      <source src="runneranimation.mp4" type="video/mp4">
+      Your browser does not support the video tag.
+    </video>
+  </div>
+</div>
+
+  <header>
+    <h1>Dungeons and Deliberations</h1>
+    <span class="tagline">Can you sway your fellow jurors?</span>
+    <div class="foot">
+      <button class="btn secondary" id="btn-reset">Reset Game</button>
+    </div>
+  </header>
+
+  <div class="wrap">
+    <aside class="side">
+      <div class="tabs">
+        <button class="active" data-tab="evtab">Evidence</button>
+        <button data-tab="casetab">Case Breakdown</button>
+      </div>
+      <div class="pane active" id="evtab">
+        <div class="searchbar">
+          <input id="ev-search" placeholder="Search evidence (keywords)…" />
+          <button class="btn" id="ev-clear">Clear</button>
+        </div>
+        <div class="filters">
+          <span class="chip" data-filter="class:hard">Hard</span>
+          <span class="chip" data-filter="tag:forensic">Forensic</span>
+          <span class="chip" data-filter="tag:behavioral">Behavioral</span>
+          <span class="chip" data-filter="tag:computer">Computer</span>
+          <span class="chip" data-filter="tag:timeline">Timeline</span>
+          <span class="chip" data-filter="strength:4+">Record Links</span>
+        </div>
+        <div class="evidence-list" id="evidence-list"></div>
+      </div>
+   <div class="pane" id="casetab">
+        <div class="timeline" id="case-timeline"></div>
+        <h4 style="margin:0 0 6px 0">Case Facts (neutral)</h4>
+        <div class="timeline" id="case-facts"></div>
+      </div>
+    </aside>
+
+    <main class="main">
+      <section class="status">
+        <div class="juror-card">
+          <div class="avatar" id="juror-avatar">J1</div>
+          <div>
+            <h2 id="juror-name">Juror Name</h2>
+            <div class="small" id="juror-desc"></div>
+            <div class="meter" title="Persuasion"><span id="meter-bar"></span></div>
+            <div class="small" id="juror-guidance"></div>
+          </div>
+        </div>
+        <div class="hud">
+          <div class="badge" id="turns-badge">Jurors Convinced: 0/11</div>
+          <div class="badge bad" id="strikes-badge">Strikes: 0/3</div>
+
+        </div>
+        <div class="progress" id="progress"></div>
+      </section>
+
+      <section class="chat" id="chat"></section>
+
+      <section class="composer">
+        <div>
+<div class="tactic-row">
+<label class="small" for="tactic">Tactic</label>
+            <select id="tactic" class="btn" style="padding:6px 10px">
+              <option value="logic">Logic Push</option>
+              <option value="emotion">Emotional Appeal</option>
+              <option value="authority">Authority & Procedure</option>
+              <option value="narrative">Narrative Cohesion</option>
+              <option value="socratic">Socratic Probe</option>
+              <option value="chrono">Chronology Lock</option>
+              <option value="occam">Occam’s Razor</option>
+              <option value="moral">Moral Duty</option>
+              <option value="forensic">Forensic Chain</option>
+              <option value="pattern">Pattern Consistency</option>
+              <option value="cred">Credibility Check</option>
+              <option value="spiral">Narrative Spiral</option>
+            </select>
+            <span class="small" id="roll-hint">
+🎲 d20 check applies on send</span>
+          </div>
+          <textarea id="input" placeholder="Argue guilt. Add evidence from the left."></textarea>
+          <div class="sel-ev" id="selected-ev"></div>
+        </div>
+        <div class="actions">
+          <button class="btn secondary" id="btn-clear-sel">Clear Evidence</button>
+          <button class="btn" id="btn-send">Send</button>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- Intro Overlay -->
+  <div class="overlay" id="intro" style="display:none">
+  <div class="modal">
+  <h3>Welcome to Dungeons and Deliberations</h3>
+  <p>You are serving on a high-profile jury.</strong>  You’re Juror #12, and your goal is to persuade the others toward a guilty verdict using evidence and tailored argument styles.</p>
+
+  <h4>Rules of Play (Game Mechanics)</h4>
+  <ul style="margin:6px 0 0 18px;line-height:1.35">
+    <li><strong>Patience:</strong> Jurors’ openness shrinks if you stall or repeat yourself. Make moves that advance persuasion.</li>
+    <li><strong>Strikes:</strong> Up to 3 credibility strikes for bad mismatches (defense-leaning or doubt-heavy). At 3 strikes, you lose.</li>
+    <li><strong>Tactics & Evidence:</strong> Select a tactic and add relevant prosecution evidence. Different jurors value logic, emotion, authority, or narrative differently.</li>
+  </ul>
+
+  <h4>Juror Roleplay (How to Behave)</h4>
+  <ul style="margin:6px 0 0 18px;line-height:1.35">
+    <li>Argue like a peer, not a lawyer; respond to what that juror cares about.</li>
+    <li>Read their replies—subtle hints point to what will sway them.</li>
+    <li>Keep the focus on <em>guilt</em>. Doubt-heavy framing will cost credibility.</li>
+  </ul>
+
+  <div style="display:flex;align-items:center;justify-content:flex-end;margin-top:14px">
+    <button class="btn" id="btn-start">View Case Snapshot →</button>
+  </div>
+</div>
+</div>
+<!-- Case Snapshot Overlay (appears after Intro) -->
+<div class="overlay" id="case" style="display:none">
+  <div class="modal">
+    <h3>Case Snapshot — <em>State of Florida v. Charlie Adelson</em></h3>
+
+    <ul style="margin:6px 0 0 18px;line-height:1.35">
+      <li><strong>Date of Incident:</strong> July 18, 2014 (Dan Markel shot in his driveway)</li>
+      <li><strong>Victim:</strong> Dan Markel (FSU law professor)</li>
+      <li><strong>Defendant:</strong> Charlie Adelson</li>
+      <li><strong>Allegation:</strong> Murder-for-hire conspiracy (principal to first-degree murder)</li>
+      <li><strong>Core Theory:</strong> Charlie financed the hit through Katherine Magbanua, who connected him to Sigfredo Garcia and Luis Rivera</li>
+      <li><strong>Key Evidence Categories:</strong>
+        <ul>
+          <li>Digital/Telecom — phone calls, tower data, device silence during the hit</li>
+          <li>Surveillance/Travel — Prius route, tolls, rental records, bus/gym video</li>
+          <li>Undercover/Wiretaps — “bump” operation and recorded conversations</li>
+          <li>Financial/Paper Trail — cash payoff, payroll checks, coded “TV” references</li>
+          <li>Witness/Testimony — co-conspirator accounts corroborated by records</li>
+        </ul>
+      </li>
+    </ul>
+
+
+    <div style="display:flex;justify-content:flex-end;margin-top:14px">
+      <button class="btn" id="btn-case-continue">Read Opening Statements →</button>
+    </div>
+  </div>
+</div>
+<div class="overlay" id="theories" style="display:none">
+  <div class="modal" style="max-width: 1000px; max-height: 80vh; padding: 40px; overflow-y: auto;">
+    <h3 style="text-align: center; margin-bottom: 36px; font-size: 42px;">Opening Statements</h3>
+
+ <div class="os-grid">
+
+  <!-- PROSECUTION ARGUMENT -->
+  <section class="os-card">
+    <header class="os-head">
+      <h4 class="os-title">PROSECUTION THEORY</h4>
+     <div class="os-tags">
+  <span class="os-tag">Conspiracy</span>
+</div>
+
+    </header>
+
+    <div class="os-summary">
+  <p class="kicker">Summary</p>
+<p><strong>Prosecutors argue</strong> Charlie Adelson <strong>hired hitmen through Katherine Magbanua</strong> to kill Dan Markel so his sister could relocate, then <strong>paid for the murder</strong> and <strong>hid the payments through cash, payroll checks, and fabricated explanations</strong>.</p>
+</div>
+
+    <div class="os-body">
+      <p>
+        Charlie Adelson hired two men to kill Dan Markel so his sister could move her children to South Florida, and he did it in loyalty to the person who hated Dan Markel the most — his mother. The plan moved through Katherine Magbanua, who connected Charlie to the gunmen while keeping them insulated from him. The murder was arranged before it happened, paid for the night it happened, and concealed for years afterward.
+      </p>
+
+      <p>
+        In the days leading up to the killing, the gunmen made surveillance trips to Markel’s Tallahassee neighborhood. On the morning of July 18, 2014, they followed him from his gym to his driveway in a rented Prius and shot him twice in the head at close range while he sat in his car. Their phones went dark during the exact window of the murder and came back on as they fled south. Minutes later, one of them called Magbanua and said, “Everything is done.”
+      </p>
+
+      <p>
+        That night, Charlie Adelson paid. The state told jurors the cash was delivered in stapled bundles of $100 bills — a detail repeated by multiple witnesses and later tied to the men who carried out the killing. The payments did not stop. Magbanua was placed on the payroll of the Adelson family dental practice for a job she never worked. When investigators began closing in, Charlie coached her to say she was “cleaning the office” on weekends to explain the checks.
+      </p>
+
+      <p>
+        The motive ran through the family. Donna Adelson’s emails showed deep hostility toward Dan Markel. She wrote that he was ruining their lives, discussed offering him $1 million to allow the relocation, and said after losing in court that “Markel has not beaten the Adelson family yet.” The prosecution told jurors Charlie became “the solution to that problem” because he had the money and the connections to make Dan go away.
+      </p>
+
+      <p>
+        Charlie Adelson thought he had built the perfect buffer between himself and this murder. He joked for years that hiring a hitman would be cheaper than buying a television because, in his mind, this was something you could talk about and never be connected to. He believed that using Katherine Magbanua as the bridge meant the shooters could never lead back to him. He believed cash in stapled bundles, fake payroll checks, and made-up stories about “cleaning the office” would make the money look ordinary. And when the FBI staged the bump in 2016, he said on tape that if police had any real evidence, “we’d be at the airport.” The state told jurors this was not fear. This was the mindset of someone confident he had insulated himself so well he could never be caught.
+      </p>
+
+      <p>
+        Planning, travel, execution, payment, cover-up, and reaction. The state says every piece fits because Dan Markel’s death solved the one problem Donna Adelson could never stop talking about.
+      </p>
+
+      <p class="os-quote">
+        “Garcia was the bullet. Katie was the gun. Charlie was the finger that pulled the trigger.” — Georgia Cappleman
+      </p>
+    </div>
+  </section>
+
+  <!-- DEFENSE ARGUMENT -->
+  <section class="os-card">
+    <header class="os-head">
+      <h4 class="os-title">DEFENSE THEORY</h4>
+      <div class="os-tags">
+  <span class="os-tag">Extortion</span>
+</div>
+
+    </header>
+
+  <div class="os-summary">
+  <p class="kicker">Summary</p>
+<p><strong>Defense attorney Daniel Rashbaum argues</strong> the killers <strong>acted on their own</strong> and later <strong>used the situation to extort Charlie Adelson</strong>, who <strong>paid them out of fear</strong> and <strong>never agreed to any murder plan</strong>.</p>
+</div>
+
+
+    <div class="os-body">
+      <p>
+        Katherine Magbanua, Sigfredo Garcia, and Luis Rivera committed this murder on their own and then realized they could use it to frighten and extort Charlie Adelson. They knew about the family’s hostility toward Dan Markel, they knew Charlie had money, and they knew the situation could be used to pressure him once the murder was done.
+      </p>
+
+      <p>
+        Within 48 hours of the killing, Magbanua went to Charlie and demanded money, warning that he or his family could be next. The defense says the first payment happened after the murder because it was not payment for a hit — it was payment to stop a threat from people who had just proven what they were capable of.
+      </p>
+
+      <p>
+        There is no call, no message, no witness, and no recording where Charlie Adelson asks anyone to kill Dan Markel. The state’s case asks the jury to treat travel records, phone data, and later payments as proof of an earlier agreement that was never shown to exist.
+      </p>
+
+      <p>
+        The recorded conversations do not contain a confession. They contain a man speaking cautiously because he believes criminals are trying to trap him and because he suspects he is being monitored. Refusing to talk on the phone and using vague language are not admissions of murder.
+      </p>
+
+      <p>
+        Three people are already in prison for this crime. The defense, led by attorney Daniel Rashbaum, argues they committed the murder and then exploited Charlie’s fear to profit from it. Angry emails, bad jokes, and family tension do not prove a murder agreement.
+      </p>
+
+      <p class="os-quote">
+        “Dan Markel’s murder was inexcusable, despicable, evil… and Charlie Adelson had nothing to do with it.” — Daniel Rashbaum, Defense Attorney
+      </p>
+    </div>
+  </section>
+
+</div>
+
+      <p style="font-family: 'Oswald', sans-serif; text-transform: uppercase; font-size: 11px; letter-spacing: 1px; margin-bottom: 10px; color: var(--accent-yellow); font-weight: 700;">Your Role</p>
+      <p style="font-size: 13px; line-height: 1.7; color: var(--text-dark); margin: 0;">
+        You must argue for a <strong>guilty verdict</strong>. Use evidence and tactics to persuade each juror that the prosecution theory is correct. Different jurors value different types of arguments—logic, emotion, authority, or narrative cohesion.
+      </p>
+<div style="display:flex; justify-content:flex-end; margin-top: 28px;">
+  <button class="btn" id="btn-theories-continue">Enter the Jury Room</button>
+</div>
+
+    </div>
+
+   
+  </div>
+</div>
+
+
+  <!-- Game Over Overlay -->
+  <div class="overlay" id="overlay" style="display:none">
+    <div class="modal" style="text-align:center">
+      <h3 id="gameover-title">Game Over</h3>
+      <p id="gameover-reason">The room’s patience ran out.</p>
+      <div style="margin-top:12px;display:flex;gap:8px;justify-content:center">
+        <button class="btn" id="btn-retry">Try Again</button>
+        <button class="btn secondary" id="btn-quit">Reset</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+  /*************************************************
+   * Data — Jurors, Evidence, Timeline
+   *************************************************/
+  const JURORS = [
+    {id:1, short:"GenZ", name:"Gen Z TikTok Teen", age:18, archetype:"progressive, sarcastic, social-justice focused", style:"snarky", threshold:70, guiltBias:0.45, values:{emotion:0.6, logic:0.6, fairness:0.9, authority:0.3, doubt:0.8}},
+    {id:2, short:"Retiree", name:"Conservative Retiree", age:65, archetype:"traditional values, skeptical", style:"plain", threshold:75, guiltBias:0.65, values:{emotion:0.3, logic:0.8, fairness:0.5, authority:0.7, doubt:0.5}},
+    {id:3, short:"Mom", name:"Soccer Mom", age:42, archetype:"child‑protective, emotional", style:"empathetic", threshold:70, guiltBias:0.8, values:{emotion:0.9, logic:0.5, fairness:0.6, authority:0.5, doubt:0.4}},
+    {id:4, short:"Tech", name:"Tech Professional", age:35, archetype:"analytical, data‑driven", style:"analytic", threshold:80, guiltBias:0.55, values:{emotion:0.2, logic:0.95, fairness:0.6, authority:0.6, doubt:0.7}},
+    {id:5, short:"Blue", name:"Blue‑collar Worker", age:48, archetype:"practical, common sense", style:"blunt", threshold:72, guiltBias:0.6, values:{emotion:0.4, logic:0.7, fairness:0.7, authority:0.5, doubt:0.6}},
+    {id:6, short:"Prof", name:"College Professor", age:55, archetype:"intellectual, debates everything", style:"debate", threshold:85, guiltBias:0.5, values:{emotion:0.3, logic:0.9, fairness:0.7, authority:0.5, doubt:0.8}},
+    {id:7, short:"RN", name:"Healthcare Worker", age:29, archetype:"clinical, evidence‑based", style:"clinical", threshold:78, guiltBias:0.6, values:{emotion:0.3, logic:0.85, fairness:0.6, authority:0.7, doubt:0.7}},
+    {id:8, short:"Vet", name:"Military Veteran", age:52, archetype:"black‑and‑white thinking", style:"direct", threshold:78, guiltBias:0.7, values:{emotion:0.3, logic:0.7, fairness:0.6, authority:0.9, doubt:0.5}},
+    {id:9, short:"Artist", name:"Artist", age:31, archetype:"emotional, intuitive", style:"poetic", threshold:70, guiltBias:0.4, values:{emotion:0.95, logic:0.4, fairness:0.7, authority:0.3, doubt:0.6}},
+    {id:10, short:"Exec", name:"Business Executive", age:44, archetype:"results‑oriented, impatient", style:"sharp", threshold:75, guiltBias:0.65, values:{emotion:0.3, logic:0.75, fairness:0.5, authority:0.6, doubt:0.6}},
+    {id:11, short:"Clergy", name:"Religious Leader", age:59, archetype:"moral compass, forgiveness‑oriented", style:"pastoral", threshold:72, guiltBias:0.55, values:{emotion:0.7, logic:0.6, fairness:0.9, authority:0.5, doubt:0.7}},
+  ];
+
+  const JUROR_RULES = {
+    Tech:{ req:{tags:{forensic:1, computer:1}}, tacticOneOf:['forensic','chrono'], prefer:'logic', traps:{emotionHeavy:true} },
+    Prof:{ req:{combo:[['forensic',1],['behavioral',1]]}, tacticOneOf:['socratic','pattern'], prefer:'logic', traps:{fallacy:true} },
+    Mom:{ req:{tags:{behavioral:2}}, tacticOneOf:['moral','spiral'], prefer:'emotion', traps:{defenseStrike:true} },
+    RN:{ req:{tags:{forensic:2}}, tacticOneOf:['forensic'], prefer:'logic', traps:{emotionHeavy:true} },
+    Vet:{ req:{eitherTag:['timeline','authority']}, tacticOneOf:['chrono','occam'], prefer:'authority', traps:{doubtHeavy:true} },
+    Artist:{ req:{channel:'narrative'}, tacticOneOf:['spiral'], prefer:'narrative', traps:{clinicalHeavy:true} },
+    Exec:{ req:{concise:true, tags:{behavioral:1,timeline:1}}, tacticOneOf:['chrono','pattern'], prefer:'authority', traps:{rambling:true} },
+    Blue:{ req:{plain:true}, tacticOneOf:['occam','cred'], prefer:'blunt', traps:{jargon:true} },
+    Retiree:{ req:{authorityOrBehavioral:true}, tacticOneOf:['occam','chrono'], prefer:'authority', traps:{speculative:true} },
+    Clergy:{ req:{moral:true}, tacticOneOf:['moral'], prefer:'emotion', traps:{punitiveOnly:true} },
+    GenZ:{ req:{tags:{computer:1}}, tacticOneOf:['cred','socratic','forensic'], prefer:'logic', traps:{authorityHeavy:true} }
+  };
+
+ const EVIDENCE = [
+  {id:"ev1", title:"Prius surveillance shows hit team tailing Markel from Premier Gym", type:"surveillance", class:"hard", strength:4, side:"pros", tags:["timeline","travel"], notes:"Video shows a light-colored Toyota Prius following Dan Markel shortly before the shooting."},
+  {id:"ev2", title:"Rental record links the Prius to the hitmen’s Tallahassee trip", type:"travel", class:"hard", strength:4, side:"pros", tags:["timeline","travel"], notes:"Rental/car records tie the Prius to Garcia/Rivera and a planned Miami↔Tallahassee expedition."},
+  {id:"ev3", title:"SunPass/toll data matches Prius travel between South Florida and Tallahassee", type:"travel", class:"hard", strength:4, side:"pros", tags:["timeline","travel","computer"], notes:"Toll records place the Prius on the relevant route and timing."},
+  {id:"ev4", title:"Cell-tower pings track hitmen traveling Miami → Tallahassee → Miami", type:"digital", class:"support", strength:3, side:"pros", tags:["timeline","computer"], notes:"Cell-site data places the hit team’s devices along the route and in Tallahassee on the murder date."},
+  {id:"ev5", title:"Phones go dark during the murder window, then come back on after fleeing", type:"digital", class:"hard", strength:4, side:"pros", tags:["timeline","computer"], notes:"Coordinated device silence suggests planning and effort to avoid tracking."},
+  {id:"ev6", title:"Neighbor witness sees Prius speeding away and finds Markel shot", type:"testimony", class:"hard", strength:3, side:"pros", tags:["timeline"], notes:"Eyewitness timeline corroborates a Prius getaway immediately after the shots."},
+  {id:"ev7", title:"Execution-style, point-blank shooting supports contract-hit theory", type:"forensic", class:"support", strength:4, side:"pros", tags:["forensic"], notes:"Medical examiner evidence: close-range head shots consistent with a targeted hit."},
+  {id:"ev8", title:"No robbery/struggle: wallet, phone, car untouched", type:"forensic", class:"support", strength:3, side:"pros", tags:["forensic"], notes:"Scene suggests the motive was killing—not theft or spontaneous violence."},
+  {id:"ev9", title:"‘Everything is done’ call: Garcia reports completion to Magbanua, asks for money", type:"digital", class:"hard", strength:4, side:"pros", tags:["timeline","computer"], notes:"Post-shooting call reflects foreknowledge and payment focus."},
+  {id:"ev10", title:"Magbanua testifies she picked up payoff cash from Charlie the night of the murder", type:"testimony", class:"hard", strength:5, side:"pros", tags:["timeline"], notes:"Co-conspirator places Charlie at center of the payoff immediately after the killing."},
+  {id:"ev11", title:"Stapled bundles of $100s described by Rivera and Magbanua", type:"physical", class:"hard", strength:5, side:"pros", tags:["forensic","financial"], notes:"Distinctive packaging detail corroborates multiple witnesses about the money."},
+  {id:"ev12", title:"‘Washed/wet’ cash detail suggests laundering/handling to reduce traces", type:"physical", class:"support", strength:4, side:"pros", tags:["forensic","financial"], notes:"Wet cash description supports an intentional effort to handle/clean bills."},
+  {id:"ev13", title:"Adelson Institute paychecks to Magbanua despite no real work", type:"financial", class:"hard", strength:4, side:"pros", tags:["financial","coverup"], notes:"Payroll records suggest ongoing payments consistent with reward/maintenance."},
+  {id:"ev14", title:"Sequential/atypical pattern of many checks to Magbanua", type:"financial", class:"support", strength:3, side:"pros", tags:["financial","coverup"], notes:"Forensic accounting frames payments as non-standard vs. real employees."},
+  {id:"ev15", title:"Post-murder ATM / banking imagery of hitmen after returning", type:"surveillance", class:"support", strength:3, side:"pros", tags:["timeline","travel"], notes:"Surveillance supports post-trip timeline and corroborates travel narrative."},
+  {id:"ev16", title:"Accidental bullet discharge inside the Prius corroborates Rivera’s story", type:"forensic", class:"hard", strength:4, side:"pros", tags:["forensic"], notes:"Physical finding in the rental vehicle matches shooter testimony."},
+  {id:"ev17", title:"‘Cheaper than a hitman’ / hitman-joke pattern tied to custody dispute", type:"behavioral", class:"support", strength:2, side:"pros", tags:["behavioral","motive"], notes:"Pattern used to show solicitation mindset and motive context."},
+  {id:"ev18", title:"Luis Rivera: ‘the blog was Wendi’ — schedule/location info flowed from Adelson side", type:"testimony", class:"support", strength:3, side:"pros", tags:["timeline"], notes:"Rivera’s account links intel for the hit to the family network."},
+  {id:"ev19", title:"Wendi’s drive-by of the crime scene shortly after the shooting", type:"behavioral", class:"support", strength:2, side:"pros", tags:["behavioral","timeline"], notes:"Unusual route choice framed as consciousness-of-guilt / checking the scene."},
+  {id:"ev20", title:"Wendi–Charlie ‘broken TV’ call shortly before the murder", type:"digital", class:"support", strength:3, side:"pros", tags:["timeline","computer"], notes:"Timing is suspicious; argued as coded or coordination-related."},
+  {id:"ev21", title:"Deleted text message from Wendi to Charlie on the day of the murder", type:"digital", class:"support", strength:3, side:"pros", tags:["computer","timeline"], notes:"Deletion used to argue consciousness of guilt."},
+  {id:"ev22", title:"‘Bump’ undercover approach to Donna with flyer and $5,000 demand", type:"undercover", class:"hard", strength:4, side:"pros", tags:["timeline"], notes:"Undercover operation triggers revealing communications and coded talk."},
+  {id:"ev23", title:"Donna’s coded ‘paperwork’ call referencing ‘both of us’", type:"wiretap", class:"hard", strength:4, side:"pros", tags:["computer"], notes:"Coded response suggests shared exposure and coordinated reaction."},
+  {id:"ev24", title:"‘The TV was about five’ code for $5,000 demand/payment", type:"wiretap", class:"support", strength:3, side:"pros", tags:["computer"], notes:"Coded language argued as concealment of extortion/plot context."},
+  {id:"ev25", title:"Dolce Vita recording: Charlie discusses investigation and ‘airport’ flight scenario", type:"wiretap", class:"hard", strength:5, side:"pros", tags:["computer","behavioral"], notes:"Statements used as consciousness of guilt and operational awareness."},
+  {id:"ev26", title:"Dolce Vita: ‘smoke grenade’ / flushing ‘cockroaches’ analogy", type:"wiretap", class:"support", strength:4, side:"pros", tags:["computer","behavioral"], notes:"Shows strategic thinking about law enforcement tactics."},
+  {id:"ev27", title:"Dolce Vita: Charlie instructs Magbanua on ‘charity’ payment approach", type:"wiretap", class:"support", strength:3, side:"pros", tags:["computer"], notes:"Coaching about how to respond to the ‘blackmailer’ is framed as management of the conspiracy."},
+  {id:"ev28", title:"Charlie’s remark: ‘If they had evidence, we’d already be at the airport’", type:"wiretap", class:"hard", strength:4, side:"pros", tags:["behavioral"], notes:"Consciousness of guilt: evaluating strength of police evidence."},
+  {id:"ev29", title:"Cash payment amount (approx. $100,000) and split described by Rivera", type:"financial", class:"hard", strength:4, side:"pros", tags:["financial"], notes:"Large bounty supports murder-for-hire and points to a wealthy sponsor."},
+  {id:"ev30", title:"Magbanua’s breast augmentation paid post-murder (reward/compensation theory)", type:"financial", class:"support", strength:2, side:"pros", tags:["financial"], notes:"Used to argue benefits flowed after the hit."},
+  {id:"ev31", title:"Harvey Adelson car ‘sale’/transfer to Magbanua without real transaction", type:"financial", class:"support", strength:2, side:"pros", tags:["financial","coverup"], notes:"Documented benefit to Magbanua framed as part of the arrangement."},
+  {id:"ev32", title:"Donna’s day planner containing Dan Markel’s car/plate info", type:"physical", class:"support", strength:3, side:"pros", tags:["forensic","motive"], notes:"Possession of identifying info supports surveillance/intel collection."},
+  {id:"ev33", title:"Isom/Wendi police interview: Wendi raises family involvement early", type:"digital", class:"context", strength:2, side:"pros", tags:["timeline"], notes:"Statement used to show the family was an obvious source of motive."},
+  {id:"ev34", title:"$1 million relocation offer to Markel to allow Wendi move (motive evidence)", type:"behavioral", class:"support", strength:3, side:"pros", tags:["motive"], notes:"Shows high-stakes pressure to relocate children to South Florida."},
+  {id:"ev35", title:"Garcia road-rage incident involving Charlie before murder (defense uses too)", type:"context", class:"context", strength:2, side:"mixed", tags:["behavioral"], notes:"Defense argued it undercuts logic of Charlie hiring someone who hated him."},
+  {id:"ev36", title:"Burner phones / encrypted app use after Magbanua arrest", type:"digital", class:"support", strength:3, side:"pros", tags:["computer","behavioral"], notes:"Shift to burners/WhatsApp framed as concealment."},
+  {id:"ev37", title:"Go-bag / guns / paranoia after arrests (consciousness of guilt)", type:"behavioral", class:"support", strength:2, side:"pros", tags:["behavioral"], notes:"Presented as fear rooted in culpability rather than innocence."},
+  {id:"ev38", title:"One-way flight / attempted flee narrative tied to Donna (post-conviction)", type:"behavioral", class:"context", strength:2, side:"pros", tags:["behavioral"], notes:"Flight behavior offered as consciousness of guilt for the family network."},
+  {id:"ev39", title:"Jailhouse ‘script’ notes attributed to Donna to shape false testimony", type:"physical", class:"support", strength:3, side:"pros", tags:["coverup"], notes:"Attempt to manufacture an extortion narrative is treated as cover-up."},
+  {id:"ev40", title:"Defense ‘double extortion’ theory: payments were fear-driven, not hiring", type:"context", class:"context", strength:3, side:"def", tags:["defense"], notes:"Defense framing: Magbanua/killers acted first and then extorted money."},
+];
+
+
+  const TIMELINE = [
+    {date:"2014-07-18", text:"Dan Markel is shot in his driveway on Trescott Drive in Tallahassee; a light-colored Prius is observed fleeing."},
+    {date:"2014-07-18 (pm)", text:"Katherine Magbanua goes to Charlie Adelson’s home to collect money; co-conspirator accounts describe stapled/wet $100 bundles."},
+    {date:"2014-07-19..2014-07-20", text:"Hitmen return to South Florida; travel records and device data support the Miami↔Tallahassee trip."},
+    {date:"2016-04", text:"‘Bump’ operation: undercover approach to Donna Adelson triggers rapid communications and coded ‘TV/paperwork’ language."},
+    {date:"2016..2019", text:"Investigators build digital, financial, and wiretap record tying the hit team to the Adelson/Magbanua payment pipeline."},
+    {date:"2019", text:"Katherine Magbanua is tried/convicted (later testimony becomes central to the State’s narrative against Charlie)."},
+    {date:"2023-10", text:"Charlie Adelson is tried in Florida on first-degree murder / conspiracy / solicitation as a principal in the plot."},
+    {date:"2023-11", text:"Jury convicts Charlie Adelson; prosecution emphasizes travel data, money trail, and recorded conversations."}
+  ];
+
+  /*************************************************
+   * Persistence & Difficulty
+   *************************************************/
+  const SAVE_KEY = 'jury_adelson_v1_hard_12th';
+  const DIFFICULTY = { name:'Hard', turnLimit:6, maxStrikes:3, meterDecay:2, mixedBiasTilt:-0.15, scale:4.2, thresholdBoost:10, strikePenalty:8, strikeThresholdBoostPer2:5 };
+  const DEFAULT_STATE = () => ({ idx:0, persuaded:new Array(JURORS.length).fill(false), meter:0, chat:[{who:'juror', text: openingLine(JURORS[0])}], selected:[], turns:0, strikes:0, gameOver:false, reason:'', history: JURORS.map(()=>({forensic:0, behavioral:0, computer:0, timeline:0, pros:0, def:0})), lastChange: new Array(JURORS.length).fill(0), fails: new Array(JURORS.length).fill(0), lastTactic: new Array(JURORS.length).fill(null) });
+
+  /*************************************************
+   * Language & Effects
+   *************************************************/
+  const LEX = { 
+    logic:["evidence","forensic","method","data","proof","chain of custody","error rate","peer review","control","timeline","metadata","cell","ping","video","photograph","sample","toxicology","analysis","causal","link","premise","inference"], 
+    emotion:["feel","heart","child","mother","family","empathy","loss","tragedy","mercy","protect","safety"], 
+    doubt:["uncertain","disputed","contested","alternative","could","might","maybe","inconsistent","no direct","lack of","doubt","speculative","unknown"], 
+    authority:["law","rule","duty","procedure","burden","beyond reasonable doubt","standard","jury instruction","expert","precedent"], 
+    fallacy:["obviously","everyone knows","always","never","must be","no way","strawman","ad hominem"] 
+  };
+  const TACTICS = { logic:{label:'Logic Push', w:{logic:1.3}}, emotion:{label:'Emotional Appeal', w:{emotion:1.35}}, authority:{label:'Authority & Procedure', w:{authority:1.3}}, narrative:{label:'Narrative Cohesion', w:{culpability:1.2, emotion:1.1}}, };
+// Expanded tactics (keep difficulty; add more routes to win)
+Object.assign(TACTICS, {
+  socratic: { label: 'Socratic Probe', w:{ logic:1.25 }, extra:{ fallacyPenalty:0.5 } },
+  chrono:   { label: 'Chronology Lock', w:{ authority:1.15, culpability:1.1 } },
+  occam:    { label: "Occam's Razor", w:{ logic:1.2, culpability:1.15 }, extra:{ doubtPenalty:0.4 } },
+  moral:    { label: 'Moral Duty', w:{ emotion:1.25, authority:1.05 } },
+  forensic: { label: 'Forensic Chain', w:{ logic:1.25, authority:1.05 } },
+  pattern:  { label: 'Pattern Consistency', w:{ culpability:1.2 }, extra:{ needsMultiTag:true } },
+  cred:     { label: 'Credibility Check', w:{ culpability:1.15, logic:1.05 }, extra:{ needsContradiction:true } },
+  spiral:   { label: 'Narrative Spiral', w:{ emotion:1.15, culpability:1.15 }, extra:{ antiClinical:true } },
+});
+
+  function classify(text){ const t=(text||'').toLowerCase(); const score={logic:0,emotion:0,doubt:0,authority:0,culpability:0,fallacy:0}; for(const k of Object.keys(LEX)) for(const w of LEX[k]) if(t.includes(w)) score[k]+=1; const CULP=["motive","opportunity","means","causal link","causation","admissions","consciousness of guilt","timeline fits","duct tape","chloroform","searches","fool‑proof suffocation","31‑day","delay reporting","nanny story","zanny","remains near home"]; for(const w of CULP) if(t.includes(w)) score.culpability+=1; const total=score.logic+score.emotion+score.doubt+score.authority+score.culpability+1; for(const k of ["logic","emotion","doubt","authority","culpability"]) score[k]=score[k]/total; return score; }
+  function evidenceEffect(ev, juror){ const base=ev.strength; let m=1; if(ev.class==='hard') m+=0.6; if(ev.tags.includes('forensic')) m*=(0.8 + juror.values.logic*0.6); if(ev.tags.includes('behavioral')) m*=(0.9 + juror.values.emotion*0.5); if(ev.tags.includes('computer')) m*=(0.9 + juror.values.logic*0.5); if(ev.tags.includes('timeline')) m*=(0.8 + juror.values.doubt*0.4); if((ev.notes||'').toLowerCase().includes('disput')) m*=0.85; const bias=(juror.guiltBias ?? 0.5) + DIFFICULTY.mixedBiasTilt; let dir=0; if(ev.side==='pros') dir=1; else if(ev.side==='def') dir=-1; else dir=(bias-0.5)*2; return (base*m)*dir; }
+  function messageEffect(msg, juror, tacticKey){ const c=classify(msg), v=juror.values; const tMod=TACTICS[tacticKey]?.w||{}; let lg=c.logic*(tMod.logic||1), em=c.emotion*(tMod.emotion||1), db=c.doubt, au=c.authority*(tMod.authority||1), cu=c.culpability*(tMod.culpability||1); let d=0; const PROSECUTION=true; d += lg * (0.7 + v.logic); d += au * (0.4 + v.authority); d += cu * (0.7 + (juror.guiltBias||0.5)); d += (db) * (PROSECUTION ? -1.2 : 1) * (0.6 + v.doubt); d += em * (0.35 + v.emotion); d -= c.fallacy * 1.5; return d * DIFFICULTY.scale; }
+  function voiceLead(style, meter){ const levels = meter<25?0: meter<50?1: meter<75?2:3; const opts = { snarky:["Ok but…","Spicy take,","This isn’t TikTok—","I’m listening,"], plain:["Alright.","Hmm.","Understood.","Go on."], empathetic:["I feel the gravity here.","As a parent—this hits.","That’s hard to hear.","It’s heavy."], analytic:["Let’s model this.","If we track the timestamps:","Mechanically—","Statistically—"], blunt:["Straight up:","Cut the fluff:","Bottom line:","Common sense—"], debate:["Counterpoint:","Steelman this:","Devil’s advocate:","Premise check:"], clinical:["Clinically:","Medically speaking:","From a lab view:","Symptomatically:"], direct:["By the book:","Orders style:","Discipline-wise:","Procedure:"], poetic:["Story-wise:","As a feeling:","Between the lines:","In the margins:"], sharp:["Time is money:","Cut to it:","ROI of certainty:","Net it out:"], pastoral:["Conscience says:","Mercy reminds:","We must be fair:","We’re accountable:"] }; return (opts[style]||opts.plain)[levels]+" "; }
+    function voiceProbe(style){
+    const probes = {
+      snarky:"What’s the cleanest receipt tying him to paying for the hit—no vibes, just proof?",
+      plain:"Name the clearest fact linking Charlie Adelson to the murder-for-hire plan.",
+      empathetic:"What shows this wasn’t random violence, but a paid decision to take a father’s life?",
+      analytic:"Give the strongest timestamped link: who/what/when connecting money + communication + travel.",
+      blunt:"What exact fact shows he financed or coordinated the hit?",
+      debate:"State the premises that lead to guilt, then test the extortion alternative.",
+      clinical:"Walk the mechanism: how information and money moved through the chain to produce the shooting.",
+      direct:"Which concrete act—payment, instruction, coded talk—shows procurement of the crime?",
+      poetic:"Tell the coherent story the facts insist on—ending with him responsible.",
+      sharp:"Bottom line: which fact closes the loop from motive to payment to execution?",
+      pastoral:"Justice requires certainty—what proves guilt beyond reasonable doubt here?"
+    };
+    return probes[style]||probes.plain;
+  }
+  function saveState(){ /* no-op for now; always fresh per load */ }
+
+    function guidanceFor(j){
+    if(j.style==='analytic')   return 'Use timestamps + records: travel, calls, payments, and why they fit procurement.';
+    if(j.style==='empathetic')return 'Center intent + human stakes: this was a planned, paid killing with children affected.';
+    if(j.style==='snarky')    return 'Receipts over vibes—pick 1–2 pieces that most tightly tie him to payment/coordination.';
+    if(j.style==='clinical')  return 'Explain the chain-of-custody style story: information → surveillance/travel → shooting → payoff.';
+    if(j.style==='direct')    return 'Point to acts that satisfy principal liability: hiring, paying, counseling, or procuring.';
+    if(j.style==='debate')    return 'Steelman extortion, then show why the evidence fits a contract hit better.';
+    if(j.style==='blunt')     return 'Plain language—what proves he funded or directed the hit?';
+    if(j.style==='poetic')    return 'Coherent narrative that stays anchored to specific proof.';
+    if(j.style==='sharp')     return 'Lead with the decisive inculpatory point.';
+    if(j.style==='pastoral')  return 'Justice with moral certainty; cite facts that warrant guilt.';
+    return 'Be clear, specific, and oriented to guilt.';
+  }
+// DOM refs (must exist before any render* runs)
+function openingLine(j){
+  return voiceLead(j.style, 0) + " " + voiceProbe(j.style);
+}
+let state;
+const els = {
+  // left panel
+  evList: document.getElementById('evidence-list'),
+  evSearch: document.getElementById('ev-search'),
+  // composer
+  selectedEv: document.getElementById('selected-ev'),
+  input: document.getElementById('input'),
+  tactic: document.getElementById('tactic'),
+  // main area
+  chat: document.getElementById('chat'),
+  jurorAvatar: document.getElementById('juror-avatar'),
+  jurorName: document.getElementById('juror-name'),
+  jurorDesc: document.getElementById('juror-desc'),
+  jurorGuidance: document.getElementById('juror-guidance'),
+  meterBar: document.getElementById('meter-bar'),
+  turnsBadge: document.getElementById('turns-badge'),
+  strikesBadge: document.getElementById('strikes-badge'),
+  progress: document.getElementById('progress'),
+  // case breakdown
+  caseTimeline: document.getElementById('case-timeline'),
+  caseFacts: document.getElementById('case-facts'),
+};
+function loadState(){
+  // If you don’t actually want persistence yet, keep it simple:
+  const base = DEFAULT_STATE();
+  // normalize any missing fields just in case
+  base.lastChange ??= 0;
+  base.fails ??= [];
+  return base;
+}
+
+function renderJuror(){
+  const j = JURORS[state.idx];
+
+  if (els.jurorAvatar) els.jurorAvatar.textContent = (state.idx + 1);
+  if (els.jurorName) els.jurorName.textContent = `${j.name} (${j.age})`;
+  if (els.jurorDesc) els.jurorDesc.textContent = `${j.archetype} • ${DIFFICULTY.name}`;
+  if (els.jurorGuidance) els.jurorGuidance.textContent = guidanceFor(j);
+  // meter fill (use the same effective threshold logic you use elsewhere)
+  const effectiveThreshold =
+    (j.threshold || 50) +
+    (DIFFICULTY?.thresholdBoost || 0) +
+    Math.floor((state.strikes || 0) / 2) * (DIFFICULTY?.strikeThresholdBoostPer2 || 0);
+
+  const pct = Math.max(0, Math.min(100, (state.meter / effectiveThreshold) * 100));
+  if (els.meterBar) els.meterBar.style.width = pct + '%';
+
+  // badges
+  const convinced = (state.persuaded || []).filter(Boolean).length;
+  if (els.turnsBadge) els.turnsBadge.textContent = `Jurors Convinced: ${convinced}/${JURORS.length}`;
+  if (els.strikesBadge) els.strikesBadge.textContent = `Strikes: ${state.strikes || 0}/${DIFFICULTY?.maxStrikes || 3}`;
+}
+
+function renderProgress(){ els.progress.innerHTML=''; JURORS.forEach((j,i)=>{ const d=document.createElement('div'); d.className='dot'+(state.persuaded[i]?' win':'')+(state.idx===i?' cur':''); d.title=`${j.name}`; els.progress.appendChild(d); }); }
+  function renderChat(){ els.chat.innerHTML=''; for(const m of state.chat){ const div=document.createElement('div'); div.className='msg '+(m.who==='juror'?'juror':'user'); const who=document.createElement('div'); who.className='who'; who.textContent = m.who==='juror' ? JURORS[state.idx].name : 'You'; const body=document.createElement('div'); body.textContent = m.text; div.appendChild(who); div.appendChild(body); els.chat.appendChild(div); } els.chat.scrollTop = els.chat.scrollHeight; }
+  function renderSelected(){ els.selectedEv.innerHTML=''; for(const id of state.selected){ const ev=EVIDENCE.find(e=>e.id===id); if(!ev) continue; const t=document.createElement('span'); t.className='tag'; t.textContent=ev.title; t.title='Click to remove'; t.onclick=()=>{ state.selected = state.selected.filter(x=>x!==id); saveState(); renderSelected(); }; els.selectedEv.appendChild(t);} }
+  let activeFilters=new Set();
+  function renderEvidence(){ const q=(els.evSearch.value||'').toLowerCase().trim(); const list=EVIDENCE.filter(e=>{ const text=(e.title+' '+(e.notes||'')+' '+(e.tags||[]).join(' ')).toLowerCase(); if(q && !text.includes(q)) return false; for(const f of activeFilters){ const [k,v]=f.split(':'); if(k==='type' && e.type!==v) return false; if(k==='class' && e.class!==v) return false; if(k==='tag' && !(e.tags||[]).includes(v)) return false; if(k==='strength' && v==='4+' && !(e.strength>=4)) return false; } return true; }); els.evList.innerHTML=''; for(const e of list){ const div=document.createElement('div'); div.className='ev'; const h=document.createElement('h4'); h.textContent=e.title; div.appendChild(h); const meta=document.createElement('div'); meta.className='meta'; meta.textContent=`${e.type} • ${e.class} • Strength ${e.strength}/5 • ${e.side==='pros'?'Prosecution':e.side==='def'?'Defense':'Mixed'}`; div.appendChild(meta); const r=document.createElement('div'); r.className='rate'; r.textContent='Strategic weight: '+(e.side==='pros'?'Supports guilt':e.side==='def'?'Helps defense':'Depends on juror'); div.appendChild(r); if(e.notes){ const n=document.createElement('div'); n.className='rate'; n.style.color = '#B38B2D'; // HUD brass
+ n.textContent=e.notes; div.appendChild(n);} const b=document.createElement('button'); b.className='btn-add'; b.textContent='Add to Argument'; b.onclick=()=>{ if(!state.selected.includes(e.id)){ state.selected.push(e.id); saveState(); renderSelected(); } }; div.appendChild(b); els.evList.appendChild(div);} }
+  function renderTimeline(){
+    els.caseTimeline.innerHTML='';
+    for(const t of TIMELINE){
+      const d=document.createElement('div');
+      d.className='titem';
+      const dt=document.createElement('div');
+      dt.className='tdate';
+      dt.textContent=t.date;
+      d.appendChild(dt);
+      d.appendChild(document.createTextNode(t.text));
+      els.caseTimeline.appendChild(d);
+    }
+  }
+  const FACTS = [
+    {label:"Location", text:"Tallahassee (homicide) and South Florida (planning/payment/travel origin)."},
+    {label:"Victim", text:"Dan Markel — Florida State University law professor; killed July 18, 2014."},
+    {label:"Alleged Motive", text:"Family conflict tied to Wendi Adelson’s custody/relocation dispute and the desire to move the children to South Florida."},
+    {label:"State Theory", text:"Charlie Adelson financed/procured a murder-for-hire through Katherine Magbanua, who connected him to Sigfredo Garcia and Luis Rivera."},
+    {label:"Key Proof Themes", text:"Travel/surveillance of the Prius, digital communications + device data, payoff/paper trail, and undercover/wiretap recordings."},
+    {label:"Defense Theme", text:"‘Double extortion’ — the killers acted on their own and later blackmailed Charlie through Magbanua."},
+    {label:"Result", text:"Charlie Adelson convicted (2023) of first-degree murder, conspiracy, and solicitation as a principal to the crime."}
+  ];
+  function renderFacts(){
+    els.caseFacts.innerHTML='';
+    for(const f of FACTS){
+      const d=document.createElement('div');
+      d.className='titem';
+      const dt=document.createElement('div');
+      dt.className='tdate';
+      dt.textContent=f.label;
+      d.appendChild(dt);
+      d.appendChild(document.createTextNode(f.text));
+      els.caseFacts.appendChild(d);
+    }
+  }
+/****************************************************************
+ * Hints (oblique, personality-based)
+ ****************************************************************/
+const HINTS = {
+  GenZ: [
+    "Spare the vibes. What would screenshot culture call a receipt?",
+    "Two different lanes tell the same story—try pairing them.",
+    "If a story has a hole, point at the hole-maker, not the hole.",
+  ],
+  Retiree: [
+    "Simple beats clever. Reduce to the fewest working parts.",
+    "If duty was skipped, name the skipped step, then the consequence.",
+    "The straightest path isn’t sentimental.",
+  ],
+  Mom: [
+    "Talk about care, not code.",
+    "Two concrete behaviors outweigh one theory.",
+    "Protect the child first, then assign the why.",
+  ],
+  Tech: [
+    "Timestamps before takes.",
+    "Chain the method, not the mood.",
+    "Two independent signals increase confidence.",
+  ],
+  Blue: [
+    "Say it like you’re fixing a leak: where’s the crack?",
+    "Plain words. One problem, one cause.",
+    "If it sounds like a slogan, it probably is.",
+  ],
+  Prof: [
+    "State premises. Show how they entail the claim.",
+    "Varied sources, same conclusion. That’s the point.",
+    "If you can’t formalize it, don’t sell it.",
+  ],
+  RN: [
+    "Mechanism first, emotion later.",
+    "If it wasn’t measured, it’s conjecture.",
+    "Two clinicals beat one anecdote.",
+  ],
+  Vet: [
+    "Clock and rule. Which were violated?",
+    "Order of events matters more than adjectives.",
+    "Certainty earns respect; hedging doesn’t.",
+  ],
+  Artist: [
+    "Make the narrative lock—setup, turn, inevitability.",
+    "Choose images, not instruments.",
+    "If the ending is true, the middle should foreshadow it.",
+  ],
+  Exec: [
+    "Lead with the bottleneck.",
+    "Two bullets: when and what changed.",
+    "Concision is credibility.",
+  ],
+  Clergy: [
+    "Name the duty owed, then the harm done.",
+    "Mercy needs truth; supply the latter.",
+    "Conscience follows facts.",
+  ],
+};
+
+function getHint(key, tier=0){
+  const arr = HINTS[key] || [];
+  return arr[Math.min(tier, arr.length-1)] || "Refine your angle.";
+}
+
+function vagueReqHint(req){
+  if(!req) return null;
+  if (req.tags) {
+    const keys = Object.keys(req.tags);
+    if (keys.includes('forensic'))   return "Receipts aren’t lab-grade yet.";
+    if (keys.includes('behavioral')) return "Patterns of conduct matter more than claims.";
+    if (keys.includes('computer'))   return "Digital trails speak when people don’t.";
+    if (keys.includes('timeline'))   return "Your clock is missing teeth.";
+  }
+  if (req.combo)        return "Parallel lanes should converge, not wander.";
+  if (req.eitherTag)    return "Pick a lane that marks either time or authority.";
+  if (req.channel==='narrative') return "Make the story inevitable, not decorative.";
+  if (req.concise)      return "Trim the fat; meaning survives the cut.";
+  if (req.plain)        return "Trade jargon for plain tools and wood.";
+  if (req.authorityOrBehavioral) return "Procedure or behavior—choose one and land it.";
+  if (req.moral)        return "Name the duty before the blame.";
+  return null;
+}
+
+/****************************************************************
+ * Critical Combos — Guaranteed but Hard Paths
+ * If the player uses one of these tactic+tag mixes on the right juror,
+ * we add a flat boost (pre-dice) so the juror is beatable even on bad rolls.
+ ****************************************************************/
+const CRITICAL = {
+  GenZ:   [ {tactic:'cred', anyTag:['computer','behavioral']}, {tactic:'socratic', anyTag:['computer']}, {tactic:'forensic', anyTag:['computer']} ],
+  Retiree:[ {tactic:'occam', anyTag:['behavioral','timeline']}, {tactic:'chrono', anyTag:['timeline']} ],
+  Mom:    [ {tactic:'moral', anyTag:['behavioral']}, {tactic:'spiral', anyTag:['behavioral']} ],
+  Tech:   [ {tactic:'forensic', anyTag:['forensic','computer']}, {tactic:'chrono', anyTag:['timeline','computer']} ],
+  Blue:   [ {tactic:'occam', anyTag:['behavioral']}, {tactic:'cred', anyTag:['behavioral']} ],
+  Prof:   [ {tactic:'socratic', anyTag:['forensic','behavioral']}, {tactic:'pattern', anyTag:['forensic','timeline']} ],
+  RN:     [ {tactic:'forensic', anyTag:['forensic']} ],
+  Vet:    [ {tactic:'chrono', anyTag:['timeline']}, {tactic:'occam', anyTag:['timeline','behavioral']} ],
+  Artist: [ {tactic:'spiral', anyTag:['behavioral','timeline']} ],
+  Exec:   [ {tactic:'chrono', anyTag:['timeline','behavioral']}, {tactic:'pattern', anyTag:['timeline','behavioral']} ],
+  Clergy: [ {tactic:'moral', anyTag:['behavioral']} ],
+};
+
+function criticalHitFor(jurorKey, tacticKey, used){
+  const rules = CRITICAL[jurorKey]||[];
+  const tags = new Set();
+  for(const ev of used){ (ev.tags||[]).forEach(t=>tags.add(t)); }
+  for(const r of rules){
+    if(r.tactic!==tacticKey) continue;
+    if(r.anyTag && !r.anyTag.some(t=>tags.has(t))) continue;
+    return true;
+  }
+  return false;
+}
+
+// REPLACE your existing generateResponse with this upgraded one:
+function generateResponse(userText, selectedIds, juror, meter, tacticKey){
+  const used=EVIDENCE.filter(e=>selectedIds.includes(e.id));
+  let delta=0;
+  // player text effect (already scaled to prosecution)
+  if(userText) delta += messageEffect(userText, juror, tacticKey);
+  // evidence effect (juror-weighted)
+  for(const ev of used) delta += evidenceEffect(ev, juror)/3;
+  // guaranteed-but-hard route
+  if(criticalHitFor(juror.short, tacticKey, used)) delta += 6.5; // tuned for Hard
+  // small natural variance (keeps it from feeling deterministic)
+  delta += (Math.random()-0.5)*0.8;
+
+  // juror voice reply (more helpful than "try again" but not easy)
+  const mention = used.length ? " I hear you on " + used.map(e=>`“${e.title}”`).slice(0,2).join(" and ") + "." : "";
+  const lead=voiceLead(juror.style, meter);
+  const probe=voiceProbe(juror.style);
+  const text=`${lead}${mention} ${probe}`.trim();
+  return {text, delta};
+}
+  function rollD20(mode){ const d1=1+Math.floor(Math.random()*20), d2=1+Math.floor(Math.random()*20); return {d1,d2, roll: mode==='adv'?Math.max(d1,d2): mode==='dis'?Math.min(d1,d2): d1, mode}; }
+  function applyJurorRules(juror, clas, used, text, turns, history){
+    const key = juror.short;
+    const R = JUROR_RULES[key]||{};
+    const out={adv:false, dis:false, deltaBonus:0, deltaPenalty:0, blockFlip:false, msg:null};
+    const tagCount = {...history};
+    for(const ev of used){ (ev.tags||[]).forEach(t=>{ tagCount[t]=(tagCount[t]||0)+1; }); if(ev.side==='pros') tagCount.pros=(tagCount.pros||0)+1; if(ev.side==='def') tagCount.def=(tagCount.def||0)+1; }
+    const len=(text||'').length;
+    // Requirements
+    if(R.req){
+      if(R.req.tags){ for(const [t,need] of Object.entries(R.req.tags)){ if((tagCount[t]||0) < need){ out.blockFlip=true; out.msg=`Needs more ${t} evidence.`; } } }
+      if(R.req.combo){ for(const [t,need] of R.req.combo){ if((tagCount[t]||0) < need){ out.blockFlip=true; out.msg=`Must include at least one ${t} item.`; } } }
+      if(R.req.eitherTag){ const ok = R.req.eitherTag.some(t=> (tagCount[t]||0)>0 ); if(!ok){ out.blockFlip=true; out.msg=`Use a ${R.req.eitherTag.join(' or ')} item.`; } }
+      if(R.req.channel==='narrative'){ const narrative = (clas.emotion + clas.culpability) > 0.6; if(!narrative){ out.blockFlip=true; out.msg=`Make a coherent narrative tying facts to guilt.`; } }
+      if(R.req.concise && len>240){ out.deltaPenalty+=3; out.msg = out.msg||'Be concise for this juror.'; }
+      if(R.req.plain && clas.logic>0.8 && clas.emotion<0.2){ out.deltaPenalty+=2; out.msg = out.msg||'Use plain, concrete points.'; }
+      if(R.req.authorityOrBehavioral && !(clas.authority>0.3 || tagCount.behavioral>0)){ out.blockFlip=true; out.msg='Cite rules/procedure or concrete behavior.'; }
+      if(R.req.moral && clas.emotion<0.25){ out.blockFlip=true; out.msg='Ground the case in duty, care, and harm.'; }
+    }
+    // Preferred styles grant advantage
+    if(R.prefer==='logic' && clas.logic>clas.emotion) out.adv=true;
+    if(R.prefer==='emotion' && clas.emotion>=Math.max(clas.logic,clas.authority)) out.adv=true;
+    if(R.prefer==='authority' && clas.authority>0.25) out.adv=true;
+    if(R.prefer==='narrative' && (clas.emotion+clas.culpability)>0.6) out.adv=true;
+    if(R.prefer==='blunt' && len<200) out.adv=true;
+    // Traps / penalties
+    if(R.traps){
+      if(R.traps.emotionHeavy && clas.emotion>0.6) out.dis=true;
+      if(R.traps.clinicalHeavy && clas.logic>0.6 && clas.emotion<0.2) out.deltaPenalty+=2;
+      if(R.traps.rambling && len>360) out.dis=true;
+      if(R.traps.jargon && clas.logic>0.8 && clas.emotion<0.1) out.deltaPenalty+=3;
+      if(R.traps.speculative && clas.doubt>0.3) out.dis=true;
+      if(R.traps.punitiveOnly && clas.emotion<0.3 && clas.authority>0.3) out.deltaPenalty+=2;
+      if(R.traps.authorityHeavy && clas.authority>0.5) out.deltaPenalty+=2;
+      if(R.traps.doubtHeavy && clas.doubt>0.3) out.dis=true;
+      if(R.traps.fallacy && clas.fallacy>0) out.deltaPenalty+=4;
+      if(R.traps.defenseStrike && used.some(e=>e.side==='def')) out.dis=true;
+    }
+    // Tactic gating & extras
+    const tactic = (document.getElementById('tactic')?.value)||'';
+    if(R.tacticOneOf && R.tacticOneOf.length){
+      if(!R.tacticOneOf.includes(tactic)){
+        out.blockFlip = true;
+        out.msg = out.msg || 'Use a tactic that fits this juror.';
+      }
+    }
+    const tx = TACTICS[tactic]?.extra || {};
+    if(tx.needsMultiTag){ const distinct = ['forensic','behavioral','computer','timeline'].filter(t=> (tagCount[t]||0)>0).length; if(distinct < 2){ out.deltaPenalty += 2; out.msg = out.msg || 'Show consistency across categories.'; } }
+    if(tx.needsContradiction){ const usedTitles = used.map(u=> (u.title||'').toLowerCase()); const hinted = usedTitles.some(t => t.includes('unsupported') || t.includes('conflicting') || t.includes('false')); if(!hinted){ out.deltaPenalty += 2; out.msg = out.msg || 'Point out contradictions to build credibility theme.'; } }
+    if(tx.antiClinical && clas.logic>0.6 && clas.emotion<0.25){ out.deltaPenalty += 2; }
+    if(TACTICS[tactic]?.extra?.fallacyPenalty && clas.fallacy>0){ out.deltaPenalty += 2; }
+    if(TACTICS[tactic]?.extra?.doubtPenalty && clas.doubt>0.35){ out.deltaPenalty += 2; }
+    return out; 
+  }
+
+  function send(){
+    if(state.gameOver) return;
+    const text=(els.input.value||'').trim();
+    if(!text && !state.selected.length) return;
+    const juror=JURORS[state.idx];
+    state.turns=(state.turns||0)+1;
+    if(text){ state.chat.push({who:'user', text}); }
+    const before = state.meter;
+    const hist = state.history[state.idx];
+    const usedNow = EVIDENCE.filter(e=>state.selected.includes(e.id));
+    for(const ev of usedNow){ (ev.tags||[]).forEach(t=>{ hist[t]=(hist[t]||0)+1; }); if(ev.side==='pros') hist.pros=(hist.pros||0)+1; if(ev.side==='def') hist.def=(hist.def||0)+1; }
+    const clasPreview = classify(text);
+    const tacticKey = (document.getElementById('tactic')?.value)||'logic';
+    let {text:reply, delta}=generateResponse(text, state.selected, juror, state.meter, tacticKey);
+    // Diminishing returns for repeating the same tactic on the same juror
+    state.lastTactic = state.lastTactic || Array(JURORS.length).fill(null);
+    const last = state.lastTactic[state.idx];
+    if(last && last === tacticKey){ delta *= 0.85; }
+    state.lastTactic[state.idx] = tacticKey;
+
+    const rule = applyJurorRules(juror, clasPreview, usedNow, text, state.turns, hist);
+    if(rule.deltaPenalty) delta -= rule.deltaPenalty;
+    if(rule.deltaBonus) delta += rule.deltaBonus;
+
+    state.chat.push({who:'juror', text:reply});
+
+    const clas=clasPreview;
+    const used=EVIDENCE.filter(e=>state.selected.includes(e.id));
+    const prosUsed = used.filter(e=>e.side==='pros').length;
+    const defUsed = used.some(e=>e.side==='def');
+    const aligns = (tacticKey==='logic' && juror.values.logic>0.8) || (tacticKey==='emotion' && juror.values.emotion>0.8) || (tacticKey==='authority' && juror.values.authority>0.8) || (tacticKey==='narrative' && juror.values.emotion>0.6 && juror.values.logic>0.4);
+    const adv = ((prosUsed>=2 && clas.doubt<0.3) || aligns || rule.adv);
+    const dis = (defUsed || clas.doubt>0.5 || rule.dis);
+    const mode = adv && !dis ? 'adv' : dis && !adv ? 'dis' : 'normal';
+    const r = rollD20(mode);
+    if(r.roll===1){ state.strikes=Math.min(DIFFICULTY.maxStrikes,(state.strikes||0)+1); state.chat.push({who:'juror', text:`💥 Critical miss (nat 1). Strike added.`}); }
+    if(r.roll===20){ delta *= 1.25; state.chat.push({who:'juror', text:`✨ Critical success (nat 20). Argument hits harder.`}); }
+    const diceMult = (r.roll===1)?0.2 : (r.roll===20)?1.9 : (10 + (r.roll-10)*1.1)/20; delta *= diceMult;
+    state.chat.push({who:'juror', text:`🎲 d20: ${r.roll}${r.mode!=='normal'?` (${r.mode})`:''} → multiplier ${diceMult.toFixed(2)}.`});
+
+    if(clas.doubt>0.4 || used.some(e=>e.side==='def')){ state.strikes=Math.min(DIFFICULTY.maxStrikes,(state.strikes||0)+1); state.meter = Math.max(0, state.meter - DIFFICULTY.strikePenalty); const extraThresh = Math.floor(state.strikes/2)*DIFFICULTY.strikeThresholdBoostPer2; state.chat.push({who:'juror', text:`⚠️ Strike ${state.strikes}/${DIFFICULTY.maxStrikes}: defense‑leaning/doubt. −${DIFFICULTY.strikePenalty} meter. Threshold +${extraThresh} total.`}); }
+
+    state.meter = Math.max(0, Math.min(100, state.meter + delta - DIFFICULTY.meterDecay));
+    const change = Math.round(state.meter - before); const sign = change>0?"📈":"📉"; if(change!==0){ state.chat.push({who:'juror', text:`${sign} Meter ${change>0?'+':''}${change}.`}); }
+state.lastChange[state.idx] = change;
+if (change <= 0) { state.fails[state.idx] = (state.fails[state.idx] || 0) + 1; }
+else { state.fails[state.idx] = 0; }
+
+// Light-touch hints after 2 and 4 unproductive turns
+if (state.fails[state.idx] === 2 || state.fails[state.idx] === 4) {
+  const key = JURORS[state.idx].short;
+  state.chat.push({ who:'juror', text: getHint(key, state.fails[state.idx] === 4 ? 1 : 0) });
+}
+
+state.selected = [];
+els.input.value = '';
+
+    const effectiveThreshold = juror.threshold + DIFFICULTY.thresholdBoost + Math.floor((state.strikes||0)/2)*DIFFICULTY.strikeThresholdBoostPer2;
+    if(state.strikes>=DIFFICULTY.maxStrikes){ return gameOver('Too many strikes (arguments aided the defense).'); }
+// Low-patience flavor ping (last 3 steps)
+{
+  const left = Math.max(0, DIFFICULTY.turnLimit - state.turns);
+  if (left <= 3) {
+    state.chat.push({
+      who: 'juror',
+      text: `⏳ The room's patience is thinning — ${left}/${DIFFICULTY.turnLimit} left.`
+    });
+  }
+}
+    if(state.meter>=effectiveThreshold){
+    if (rule.blockFlip) {
+  const hint = vagueReqHint((JUROR_RULES[juror.short]||{}).req) || getHint(juror.short, 1);
+  state.chat.push({ who:'juror', text: `Not there yet — ${hint}` });
+}
+
+      else { state.persuaded[state.idx]=true; state.chat.push({who:'juror', text:`Alright, I'm convinced. Move on.`}); const next=state.persuaded.indexOf(false); if(next===-1){ overlay('Verdict — GUILTY','All jurors convinced.'); state.gameOver=true; saveState(); renderAll(); return; } else { state.idx=next; state.meter=0; state.turns=0; state.chat=[{who:'juror', text:openingLine(JURORS[state.idx])}]; } }
+    }
+    saveState(); renderAll();
+  }
+
+
+  /*************************************************
+   * End States, UI Wiring & Boot
+   *************************************************/
+  function gameOver(reason){ state.gameOver=true; state.reason=reason; overlay('Game Over', reason); renderAll(); }
+  function overlay(title, reason){ const o=document.getElementById('overlay'); if(!o) return; const t=document.getElementById('gameover-title'); const r=document.getElementById('gameover-reason'); if(t) t.textContent=title; if(r) r.textContent=reason; o.style.display='flex'; }
+  function hideOverlay(){ const o=document.getElementById('overlay'); if(o) o.style.display='none'; const i=document.getElementById('intro'); if(i) i.style.display='none'; }
+
+  function renderAll(){ renderJuror(); renderProgress(); renderChat(); renderSelected(); renderEvidence(); renderTimeline(); renderFacts(); }
+
+  function reset(){ state = DEFAULT_STATE(); activeFilters.clear(); document.querySelectorAll('.chip').forEach(c=>c.classList.remove('active')); if(els.evSearch) els.evSearch.value=''; if(els.input) els.input.value=''; state.selected=[]; renderAll(); const intro=document.getElementById('intro'); if(intro) intro.style.display='flex'; const th=document.getElementById('theories'); if(th) th.style.display='none'; }
+
+  function exportSave(){ const blob=new Blob([JSON.stringify(state,null,2)],{type:'application/json'}); const url=URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url; a.download='juror_save.json'; a.click(); URL.revokeObjectURL(url); }
+  function importSave(){ const inp=document.createElement('input'); inp.type='file'; inp.accept='application/json'; inp.onchange=()=>{ const f=inp.files[0]; if(!f) return; const rd=new FileReader(); rd.onload=()=>{ try{ const s=JSON.parse(rd.result); state=Object.assign(DEFAULT_STATE(), s); renderAll(); }catch(e){ alert('Invalid save file'); } }; rd.readAsText(f); }; inp.click(); }
+
+  // Tabs and chips
+  document.querySelectorAll('.tabs button').forEach(btn=>{ btn.addEventListener('click', ()=>{ document.querySelectorAll('.tabs button').forEach(b=>b.classList.remove('active')); document.querySelectorAll('.side .pane').forEach(p=>p.classList.remove('active')); btn.classList.add('active'); document.getElementById(btn.dataset.tab).classList.add('active'); }); });
+  document.querySelectorAll('.chip').forEach(ch=>{ ch.addEventListener('click', ()=>{ const key=ch.dataset.filter; if(activeFilters.has(key)) activeFilters.delete(key); else activeFilters.add(key); ch.classList.toggle('active'); renderEvidence(); }); });
+// Buttons (safe)
+// Buttons (SAFE)
+const on = (id, evt, fn) => {
+  const el = document.getElementById(id);
+  if (el) el.addEventListener(evt, fn);
+};
+
+on('btn-clear-sel', 'click', ()=>{ state.selected=[]; renderSelected(); });
+on('btn-send', 'click', send);
+on('btn-reset', 'click', reset);
+
+on('ev-search', 'input', ()=>renderEvidence());
+on('ev-clear', 'click', ()=>{
+  const s = document.getElementById('ev-search');
+  if (s) s.value = '';
+  activeFilters.clear();
+  document.querySelectorAll('.chip').forEach(c=>c.classList.remove('active'));
+  renderEvidence();
+});
+
+// Intro → Case → Theories flow (SAFE)
+on('btn-start', 'click', ()=>{
+  const intro = document.getElementById('intro');
+  const cs    = document.getElementById('case');
+  if (intro) intro.style.display = 'none';
+  if (cs)    cs.style.display    = 'flex';
+});
+on('btn-case-continue', 'click', ()=>{
+  const cs = document.getElementById('case');
+  const th = document.getElementById('theories');
+  if (cs) cs.style.display = 'none';
+  if (th) th.style.display = 'flex';
+});
+on('btn-theories-continue', 'click', ()=>{
+  const th = document.getElementById('theories');
+  if (th) th.style.display = 'none';
+});
+// Intro → Case → Theories flow
+  
+// Boot (after DOM exists)
+document.addEventListener('DOMContentLoaded', () => {
+  state = loadState();
+  renderAll();
+}, { once: true });
+
+  </script>
+<script>
+(function() {
+  const TITLE_TEXT = "DUNGEONS AND DELIBERATIONS";
+  const SUB_TEXT = "CAN YOU SWAY YOUR FELLOW JURORS?";
+  const SPEED = 35;
+  const PAUSE = 100;
+
+  const titleEl = document.getElementById("intro-title");
+  const subEl = document.getElementById("intro-sub");
+  const overlay = document.getElementById("typing-intro");
+  const animationEl = document.getElementById("transition-animation");
+  const video = document.getElementById("runner-video");
+
+  function typeText(el, text) {
+    return new Promise(resolve => {
+      let i = 0;
+      const tick = () => {
+        el.textContent = text.slice(0, i++);
+        if (i <= text.length) setTimeout(tick, SPEED);
+        else resolve();
+      };
+      tick();
+    });
+  }
+
+  async function run() {
+    await typeText(titleEl, TITLE_TEXT);
+    await new Promise(r => setTimeout(r, PAUSE));
+    await typeText(subEl, SUB_TEXT);
+    
+    // Show start button after typing completes
+    const startBtn = document.getElementById("video-start-btn");
+    if (startBtn) {
+      startBtn.style.display = 'block';
+    }
+  }
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", run, { once: true });
+  } else {
+    run();
+  }
+})();
+</script>
+
+<script>
+const videoEl = document.getElementById('runner-video');
+if (videoEl) {
+  videoEl.addEventListener('play', () => {
+    window.addEventListener('keydown', blockKeys, true);
+  });
+  videoEl.addEventListener('ended', () => {
+    window.removeEventListener('keydown', blockKeys, true);
+  });
+}
+
+function blockKeys(e) {
+  const blocked = ['Enter', ' ', 'Spacebar', 'Escape', 'ArrowRight'];
+  if (blocked.includes(e.key)) e.preventDefault();
+}
+// Handle start button click
+  document.addEventListener('DOMContentLoaded', () => {
+    const startBtn = document.getElementById("video-start-btn");
+    const video = document.getElementById("runner-video");
+    const overlay = document.getElementById("typing-intro");
+    const animationEl = document.getElementById("transition-animation");
+    
+    if (startBtn) {
+      startBtn.addEventListener('click', () => {
+        startBtn.style.display = 'none';
+     // Set up video event listener
+        video.addEventListener('ended', () => {
+          overlay.classList.add("fade-out");
+          
+          setTimeout(() => {
+            overlay.style.display = 'none';  // ADD THIS LINE
+            const introModal = document.getElementById('intro');
+            if (introModal) {
+              introModal.style.display = 'flex';
+            }
+          }, 150);
+        }, { once: true });
+        // Start video
+        animationEl.classList.add("show-animation");
+        video.playbackRate = 2.0;
+        video.play();
+      });
+    }
+  });
+</script>
+
+<button id="video-start-btn">Start Game</button>
+
+</body>
+</html>
