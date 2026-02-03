@@ -824,9 +824,7 @@ header .foot{
   grid-template-columns: 1fr 1fr;
   gap: 28px;
   margin-bottom: 28px;
-  align-items: start; /* IMPORTANT: stop equal-height stretching */
 }
-
 
 #theories .os-card{
   background: #fff;
@@ -988,14 +986,12 @@ header .foot{
 <div id="typing-intro">
   <h1 id="intro-title"></h1>
   <h2 id="intro-sub"></h2>
- <div id="transition-animation">
-  <video id="runner-video" muted playsinline preload="auto">
-    <source src="./runneranimation.mp4" type="video/mp4">
-    Your browser does not support the video tag.
-  </video>
-</div>
-
-<button id="video-start-btn" type="button">Start Game</button>
+  <div id="transition-animation">
+<video id="runner-video" muted playsinline preload="auto">
+      <source src="runneranimation.mp4" type="video/mp4">
+      Your browser does not support the video tag.
+    </video>
+  </div>
 </div>
 
   <header>
@@ -1167,7 +1163,12 @@ header .foot{
       </p>
 
       <p>
-        The state presented evidence that Charlie Adelson made and concealed payments to Katherine Magbanua immediately after the murder, including cash delivered in distinctive stapled bundles and later payroll checks for work she did not perform, accompanied by instructions on how to explain those payments. </p>
+        In the days leading up to the killing, the gunmen made surveillance trips to Markel’s Tallahassee neighborhood. On the morning of July 18, 2014, they followed him from his gym to his driveway in a rented Prius and shot him twice in the head at close range while he sat in his car. Their phones went dark during the exact window of the murder and came back on as they fled south. Minutes later, one of them called Magbanua and said, “Everything is done.”
+      </p>
+
+      <p>
+        That night, Charlie Adelson paid. The state told jurors the cash was delivered in stapled bundles of $100 bills — a detail repeated by multiple witnesses and later tied to the men who carried out the killing. The payments did not stop. Magbanua was placed on the payroll of the Adelson family dental practice for a job she never worked. When investigators began closing in, Charlie coached her to say she was “cleaning the office” on weekends to explain the checks.
+      </p>
 
       <p>
         The motive ran through the family. Donna Adelson’s emails showed deep hostility toward Dan Markel. She wrote that he was ruining their lives, discussed offering him $1 million to allow the relocation, and said after losing in court that “Markel has not beaten the Adelson family yet.” The prosecution told jurors Charlie became “the solution to that problem” because he had the money and the connections to make Dan go away.
@@ -1888,59 +1889,54 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 })();
 </script>
+
 <script>
 const videoEl = document.getElementById('runner-video');
-...
-<script>
-  // Block keys only while the runner video is playing
-  function blockKeys(e) {
-    const blocked = ['Enter', ' ', 'Spacebar', 'Escape', 'ArrowRight'];
-    if (blocked.includes(e.key)) e.preventDefault();
-  }
+if (videoEl) {
+  videoEl.addEventListener('play', () => {
+    window.addEventListener('keydown', blockKeys, true);
+  });
+  videoEl.addEventListener('ended', () => {
+    window.removeEventListener('keydown', blockKeys, true);
+  });
+}
 
+function blockKeys(e) {
+  const blocked = ['Enter', ' ', 'Spacebar', 'Escape', 'ArrowRight'];
+  if (blocked.includes(e.key)) e.preventDefault();
+}
+// Handle start button click
   document.addEventListener('DOMContentLoaded', () => {
-    const startBtn = document.getElementById('video-start-btn');
-    const video = document.getElementById('runner-video');
-    const overlay = document.getElementById('typing-intro');
-    const animationEl = document.getElementById('transition-animation');
-
-    if (!startBtn || !video || !overlay || !animationEl) return;
-
-    // Attach keyblocker only during playback
-    video.addEventListener('play', () => {
-      window.addEventListener('keydown', blockKeys, true);
-    });
-    video.addEventListener('ended', () => {
-      window.removeEventListener('keydown', blockKeys, true);
-    });
-
-    startBtn.addEventListener('click', () => {
-      startBtn.style.display = 'none';
-      animationEl.classList.add('show-animation');
-
-      // 2x speed if you want it
-      video.playbackRate = 2.0;
-
-      const onEnded = () => {
-        overlay.classList.add('fade-out');
-
-        // show your intro modal after the animation
-        const introModal = document.getElementById('intro');
-        if (introModal) introModal.style.display = 'flex';
-
-        video.removeEventListener('ended', onEnded);
-      };
-
-      video.addEventListener('ended', onEnded);
-
-      video.play().catch(err => {
-        console.error('Video play failed:', err);
-        alert('Video could not play. Open DevTools Console to see why.');
-        startBtn.style.display = 'block';
+    const startBtn = document.getElementById("video-start-btn");
+    const video = document.getElementById("runner-video");
+    const overlay = document.getElementById("typing-intro");
+    const animationEl = document.getElementById("transition-animation");
+    
+    if (startBtn) {
+      startBtn.addEventListener('click', () => {
+        startBtn.style.display = 'none';
+     // Set up video event listener
+        video.addEventListener('ended', () => {
+          overlay.classList.add("fade-out");
+          
+          setTimeout(() => {
+            overlay.style.display = 'none';  // ADD THIS LINE
+            const introModal = document.getElementById('intro');
+            if (introModal) {
+              introModal.style.display = 'flex';
+            }
+          }, 150);
+        }, { once: true });
+        // Start video
+        animationEl.classList.add("show-animation");
+        video.playbackRate = 2.0;
+        video.play();
       });
-    });
+    }
   });
 </script>
+
+<button id="video-start-btn">Start Game</button>
 
 </body>
 </html>
