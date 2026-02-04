@@ -1402,28 +1402,36 @@ function openingLine(j){
   return voiceLead(j.style, 0) + " " + voiceProbe(j.style);
 }
 let state;
-const els = {
-  // left panel
-  evList: document.getElementById('evidence-list'),
-  evSearch: document.getElementById('ev-search'),
-  // composer
-  selectedEv: document.getElementById('selected-ev'),
-  input: document.getElementById('input'),
-  tactic: document.getElementById('tactic'),
-  // main area
-  chat: document.getElementById('chat'),
-  jurorAvatar: document.getElementById('juror-avatar'),
-  jurorName: document.getElementById('juror-name'),
-  jurorDesc: document.getElementById('juror-desc'),
-  jurorGuidance: document.getElementById('juror-guidance'),
-  meterBar: document.getElementById('meter-bar'),
-  turnsBadge: document.getElementById('turns-badge'),
-  strikesBadge: document.getElementById('strikes-badge'),
-  progress: document.getElementById('progress'),
-  // case breakdown
-  caseTimeline: document.getElementById('case-timeline'),
-  caseFacts: document.getElementById('case-facts'),
-};
+let els = {};
+
+function bindEls() {
+  els = {
+    // left panel
+    evList: document.getElementById('evidence-list'),
+    evSearch: document.getElementById('ev-search'),
+
+    // composer
+    selectedEv: document.getElementById('selected-ev'),
+    input: document.getElementById('input'),
+    tactic: document.getElementById('tactic'),
+
+    // main area
+    chat: document.getElementById('chat'),
+    jurorAvatar: document.getElementById('juror-avatar'),
+    jurorName: document.getElementById('juror-name'),
+    jurorDesc: document.getElementById('juror-desc'),
+    jurorGuidance: document.getElementById('juror-guidance'),
+    meterBar: document.getElementById('meter-bar'),
+    turnsBadge: document.getElementById('turns-badge'),
+    strikesBadge: document.getElementById('strikes-badge'),
+    progress: document.getElementById('progress'),
+
+    // case breakdown
+    caseTimeline: document.getElementById('case-timeline'),
+    caseFacts: document.getElementById('case-facts'),
+  };
+}
+
 function loadState(){
   // If you don’t actually want persistence yet, keep it simple:
   const base = DEFAULT_STATE();
@@ -1782,55 +1790,83 @@ els.input.value = '';
   function exportSave(){ const blob=new Blob([JSON.stringify(state,null,2)],{type:'application/json'}); const url=URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url; a.download='juror_save.json'; a.click(); URL.revokeObjectURL(url); }
   function importSave(){ const inp=document.createElement('input'); inp.type='file'; inp.accept='application/json'; inp.onchange=()=>{ const f=inp.files[0]; if(!f) return; const rd=new FileReader(); rd.onload=()=>{ try{ const s=JSON.parse(rd.result); state=Object.assign(DEFAULT_STATE(), s); renderAll(); }catch(e){ alert('Invalid save file'); } }; rd.readAsText(f); }; inp.click(); }
 
-  // Tabs and chips
-  document.querySelectorAll('.tabs button').forEach(btn=>{ btn.addEventListener('click', ()=>{ document.querySelectorAll('.tabs button').forEach(b=>b.classList.remove('active')); document.querySelectorAll('.side .pane').forEach(p=>p.classList.remove('active')); btn.classList.add('active'); document.getElementById(btn.dataset.tab).classList.add('active'); }); });
-  document.querySelectorAll('.chip').forEach(ch=>{ ch.addEventListener('click', ()=>{ const key=ch.dataset.filter; if(activeFilters.has(key)) activeFilters.delete(key); else activeFilters.add(key); ch.classList.toggle('active'); renderEvidence(); }); });
-// Buttons (safe)
-// Buttons (SAFE)
-const on = (id, evt, fn) => {
-  const el = document.getElementById(id);
-  if (el) el.addEventListener(evt, fn);
-};
+  document.addEventListener('DOMContentLoaded', () => {
+  // 1) bind DOM refs NOW (after DOM exists)
+  bindEls();
 
-on('btn-clear-sel', 'click', ()=>{ state.selected=[]; renderSelected(); });
-on('btn-send', 'click', send);
-on('btn-reset', 'click', reset);
-
-on('ev-search', 'input', ()=>renderEvidence());
-on('ev-clear', 'click', ()=>{
-  const s = document.getElementById('ev-search');
-  if (s) s.value = '';
-  activeFilters.clear();
-  document.querySelectorAll('.chip').forEach(c=>c.classList.remove('active'));
-  renderEvidence();
-});
-
-// Intro → Case → Theories flow (SAFE)
-on('btn-start', 'click', ()=>{
-  const intro = document.getElementById('intro');
-  const cs    = document.getElementById('case');
-  if (intro) intro.style.display = 'none';
-  if (cs)    cs.style.display    = 'flex';
-});
-on('btn-case-continue', 'click', ()=>{
-  const cs = document.getElementById('case');
-  const th = document.getElementById('theories');
-  if (cs) cs.style.display = 'none';
-  if (th) th.style.display = 'flex';
-});
-on('btn-theories-continue', 'click', ()=>{
-  const th = document.getElementById('theories');
-  if (th) th.style.display = 'none';
-});
-// Intro → Case → Theories flow
-  
-// Boot (after DOM exists)
-document.addEventListener('DOMContentLoaded', () => {
+  // 2) load state + initial render
   state = loadState();
   renderAll();
+
+  // 3) Tabs and chips
+  document.querySelectorAll('.tabs button').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.tabs button').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.side .pane').forEach(p => p.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById(btn.dataset.tab)?.classList.add('active');
+    });
+  });
+
+  document.querySelectorAll('.chip').forEach(ch => {
+    ch.addEventListener('click', () => {
+      const key = ch.dataset.filter;
+      if (activeFilters.has(key)) activeFilters.delete(key);
+      else activeFilters.add(key);
+      ch.classList.toggle('active');
+      renderEvidence();
+    });
+  });
+
+  // 4) Safe button wiring
+  const on = (id, evt, fn) => {
+    const el = document.getElementById(id);
+    if (el) el.addEventListener(evt, fn);
+  };
+
+  on('btn-clear-sel', 'click', () => { state.selected = []; renderSelected(); });
+  on('btn-send', 'click', send);
+  on('btn-reset', 'click', reset);
+
+  on('ev-search', 'input', () => renderEvidence());
+  on('ev-clear', 'click', () => {
+    const s = document.getElementById('ev-search');
+    if (s) s.value = '';
+    activeFilters.clear();
+    document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+    renderEvidence();
+  });
+
+  on('btn-start', 'click', () => {
+    const intro = document.getElementById('intro');
+    const cs = document.getElementById('case');
+    if (intro) intro.style.display = 'none';
+    if (cs) cs.style.display = 'flex';
+  });
+
+  on('btn-case-continue', 'click', () => {
+    const cs = document.getElementById('case');
+    const th = document.getElementById('theories');
+    if (cs) cs.style.display = 'none';
+    if (th) th.style.display = 'flex';
+  });
+
+  on('btn-theories-continue', 'click', () => {
+    const th = document.getElementById('theories');
+    if (th) th.style.display = 'none';
+  });
+
+  // 5) Optional: Enter key sends (Shift+Enter for newline)
+  if (els.input) {
+    els.input.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        send();
+      }
+    });
+  }
 }, { once: true });
 
-  </script>
 <script>
 (function() {
   const TITLE_TEXT = "DUNGEONS AND DELIBERATIONS";
