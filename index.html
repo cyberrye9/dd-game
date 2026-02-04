@@ -1717,12 +1717,20 @@ function generateResponse(userText, selectedIds, juror, meter, tacticKey){
   }
 
   function send(){
+    alert('Send function called!'); // DEBUG
+    
     if(state.gameOver) {
       alert('Game is over. Click Reset to play again.');
       return;
     }
     
-    const text=(els.input?.value||'').trim();
+    const inputEl = els.input;
+    alert('Input element: ' + (inputEl ? 'found' : 'NOT FOUND')); // DEBUG
+    
+    const text=(inputEl?.value||'').trim();
+    alert('Text entered: "' + text + '"'); // DEBUG
+    alert('Selected evidence count: ' + state.selected.length); // DEBUG
+    
     if(!text && !state.selected.length) {
       alert('Please type an argument or select evidence before sending.');
       return;
@@ -1861,6 +1869,14 @@ els.input.value = '';
 
   // Boot (after DOM exists)
 document.addEventListener('DOMContentLoaded', () => {
+  console.log('=== DOMContentLoaded FIRED ===');
+  
+  const sendBtn = document.getElementById('btn-send');
+  const inputField = document.getElementById('input');
+  
+  console.log('Send button element:', sendBtn);
+  console.log('Input field element:', inputField);
+  
   // Tabs and chips
   document.querySelectorAll('.tabs button').forEach(btn=>{ btn.addEventListener('click', ()=>{ document.querySelectorAll('.tabs button').forEach(b=>b.classList.remove('active')); document.querySelectorAll('.side .pane').forEach(p=>p.classList.remove('active')); btn.classList.add('active'); document.getElementById(btn.dataset.tab).classList.add('active'); }); });
   document.querySelectorAll('.chip').forEach(ch=>{ ch.addEventListener('click', ()=>{ const key=ch.dataset.filter; if(activeFilters.has(key)) activeFilters.delete(key); else activeFilters.add(key); ch.classList.toggle('active'); renderEvidence(); }); });
@@ -1868,11 +1884,20 @@ document.addEventListener('DOMContentLoaded', () => {
   // Buttons (SAFE)
   const on = (id, evt, fn) => {
     const el = document.getElementById(id);
-    if (el) el.addEventListener(evt, fn);
+    console.log(`Attaching ${evt} to #${id}:`, el);
+    if (el) {
+      el.addEventListener(evt, fn);
+      console.log(`✓ ${evt} handler attached to #${id}`);
+    } else {
+      console.error(`✗ Element #${id} NOT FOUND`);
+    }
   };
 
   on('btn-clear-sel', 'click', ()=>{ state.selected=[]; renderSelected(); });
-  on('btn-send', 'click', send);
+  on('btn-send', 'click', ()=> {
+    console.log('=== SEND BUTTON CLICKED ===');
+    send();
+  });
   on('btn-reset', 'click', reset);
   
   // Allow Enter key (with Shift) to send
@@ -1914,7 +1939,9 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   state = loadState();
+  console.log('State loaded:', state);
   renderAll();
+  console.log('=== SETUP COMPLETE ===');
 }, { once: true });
 
 
