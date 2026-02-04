@@ -377,6 +377,17 @@ header .foot{
     align-self: flex-end;
   }
 
+  .msg.system {
+    background: rgba(179, 139, 45, 0.1);
+    border: 2px solid var(--accent);
+    color: var(--accent);
+    align-self: center;
+    max-width: 90%;
+    padding: 10px 16px;
+    font-size: 11px;
+    text-align: center;
+  }
+
   .msg .who {
     font-family: 'Oswald', sans-serif;
     font-weight: 700;
@@ -983,7 +994,7 @@ header .foot{
 </head>
 <body>
 <!-- Fullscreen Intro Typing Screen -->
-<div id="typing-intro">
+<div id="typing-intro" style="display:none">
   <h1 id="intro-title"></h1>
   <h2 id="intro-sub"></h2>
   <div id="transition-animation">
@@ -1070,7 +1081,7 @@ header .foot{
               <option value="spiral">Narrative Spiral</option>
             </select>
             <span class="small" id="roll-hint">
-🎲 d20 check applies on send</span>
+🎲 d20 check applies on send • Shift+Enter to send</span>
           </div>
           <textarea id="input" placeholder="Argue guilt. Add evidence from the left."></textarea>
           <div class="sel-ev" id="selected-ev"></div>
@@ -1454,7 +1465,27 @@ function renderJuror(){
 }
 
 function renderProgress(){ els.progress.innerHTML=''; JURORS.forEach((j,i)=>{ const d=document.createElement('div'); d.className='dot'+(state.persuaded[i]?' win':'')+(state.idx===i?' cur':''); d.title=`${j.name}`; els.progress.appendChild(d); }); }
-  function renderChat(){ els.chat.innerHTML=''; for(const m of state.chat){ const div=document.createElement('div'); div.className='msg '+(m.who==='juror'?'juror':'user'); const who=document.createElement('div'); who.className='who'; who.textContent = m.who==='juror' ? JURORS[state.idx].name : 'You'; const body=document.createElement('div'); body.textContent = m.text; div.appendChild(who); div.appendChild(body); els.chat.appendChild(div); } els.chat.scrollTop = els.chat.scrollHeight; }
+  function renderChat(){ 
+    if(!els.chat) return;
+    els.chat.innerHTML=''; 
+    for(const m of state.chat){ 
+      const div=document.createElement('div'); 
+      div.className='msg '+(m.who==='juror'?'juror':m.who==='system'?'system':'user'); 
+      
+      if(m.who !== 'system') {
+        const who=document.createElement('div'); 
+        who.className='who'; 
+        who.textContent = m.who==='juror' ? JURORS[state.idx].name : 'You'; 
+        div.appendChild(who);
+      }
+      
+      const body=document.createElement('div'); 
+      body.textContent = m.text; 
+      div.appendChild(body); 
+      els.chat.appendChild(div); 
+    } 
+    els.chat.scrollTop = els.chat.scrollHeight; 
+  }
   function renderSelected(){ els.selectedEv.innerHTML=''; for(const id of state.selected){ const ev=EVIDENCE.find(e=>e.id===id); if(!ev) continue; const t=document.createElement('span'); t.className='tag'; t.textContent=ev.title; t.title='Click to remove'; t.onclick=()=>{ state.selected = state.selected.filter(x=>x!==id); saveState(); renderSelected(); }; els.selectedEv.appendChild(t);} }
   let activeFilters=new Set();
   function renderEvidence(){ const q=(els.evSearch.value||'').toLowerCase().trim(); const list=EVIDENCE.filter(e=>{ const text=(e.title+' '+(e.notes||'')+' '+(e.tags||[]).join(' ')).toLowerCase(); if(q && !text.includes(q)) return false; for(const f of activeFilters){ const [k,v]=f.split(':'); if(k==='type' && e.type!==v) return false; if(k==='class' && e.class!==v) return false; if(k==='tag' && !(e.tags||[]).includes(v)) return false; if(k==='strength' && v==='4+' && !(e.strength>=4)) return false; } return true; }); els.evList.innerHTML=''; for(const e of list){ const div=document.createElement('div'); div.className='ev'; const h=document.createElement('h4'); h.textContent=e.title; div.appendChild(h); const meta=document.createElement('div'); meta.className='meta'; meta.textContent=`${e.type} • ${e.class} • Strength ${e.strength}/5 • ${e.side==='pros'?'Prosecution':e.side==='def'?'Defense':'Mixed'}`; div.appendChild(meta); const r=document.createElement('div'); r.className='rate'; r.textContent='Strategic weight: '+(e.side==='pros'?'Supports guilt':e.side==='def'?'Helps defense':'Depends on juror'); div.appendChild(r); if(e.notes){ const n=document.createElement('div'); n.className='rate'; n.style.color = '#B38B2D'; // HUD brass
@@ -1686,18 +1717,47 @@ function generateResponse(userText, selectedIds, juror, meter, tacticKey){
   }
 
   function send(){
-    if(state.gameOver) return;
-    const text=(els.input.value||'').trim();
-    if(!text && !state.selected.length) return;
+    if(state.gameOver) {
+      alert('Game is over. Click Reset to play again.');
+      return;
+    }
+    
+    const text=(els.input?.value||'').trim();
+    if(!text && !state.selected.length) {
+      alert('Please type an argument or select evidence before sending.');
+      return;
+    }
+    
     const juror=JURORS[state.idx];
     state.turns=(state.turns||0)+1;
-    if(text){ state.chat.push({who:'user', text}); }
+    
+    // Add user message to chat
+    if(text){ 
+      state.chat.push({who:'user', text}); 
+    }
+    
     const before = state.meter;
     const hist = state.history[state.idx];
     const usedNow = EVIDENCE.filter(e=>state.selected.includes(e.id));
-    for(const ev of usedNow){ (ev.tags||[]).forEach(t=>{ hist[t]=(hist[t]||0)+1; }); if(ev.side==='pros') hist.pros=(hist.pros||0)+1; if(ev.side==='def') hist.def=(hist.def||0)+1; }
+    
+    // Track evidence usage
+    for(const ev of usedNow){ 
+      (ev.tags||[]).forEach(t=>{ hist[t]=(hist[t]||0)+1; }); 
+      if(ev.side==='pros') hist.pros=(hist.pros||0)+1; 
+      if(ev.side==='def') hist.def=(hist.def||0)+1; 
+    }
+    
+    // Analyze what user typed
     const clasPreview = classify(text);
     const tacticKey = (document.getElementById('tactic')?.value)||'logic';
+    
+    // Show what you used
+    if(usedNow.length > 0) {
+      state.chat.push({who:'system', text:`📋 Evidence presented: ${usedNow.map(e=>e.title).join(', ')}`});
+    }
+    state.chat.push({who:'system', text:`🎯 Tactic: ${tacticKey.charAt(0).toUpperCase() + tacticKey.slice(1)}`});
+    
+    // Generate juror response
     let {text:reply, delta}=generateResponse(text, state.selected, juror, state.meter, tacticKey);
     // Diminishing returns for repeating the same tactic on the same juror
     state.lastTactic = state.lastTactic || Array(JURORS.length).fill(null);
@@ -1728,7 +1788,26 @@ function generateResponse(userText, selectedIds, juror, meter, tacticKey){
     if(clas.doubt>0.4 || used.some(e=>e.side==='def')){ state.strikes=Math.min(DIFFICULTY.maxStrikes,(state.strikes||0)+1); state.meter = Math.max(0, state.meter - DIFFICULTY.strikePenalty); const extraThresh = Math.floor(state.strikes/2)*DIFFICULTY.strikeThresholdBoostPer2; state.chat.push({who:'juror', text:`⚠️ Strike ${state.strikes}/${DIFFICULTY.maxStrikes}: defense‑leaning/doubt. −${DIFFICULTY.strikePenalty} meter. Threshold +${extraThresh} total.`}); }
 
     state.meter = Math.max(0, Math.min(100, state.meter + delta - DIFFICULTY.meterDecay));
-    const change = Math.round(state.meter - before); const sign = change>0?"📈":"📉"; if(change!==0){ state.chat.push({who:'juror', text:`${sign} Meter ${change>0?'+':''}${change}.`}); }
+    const effectiveThreshold = juror.threshold + DIFFICULTY.thresholdBoost + Math.floor((state.strikes||0)/2)*DIFFICULTY.strikeThresholdBoostPer2;
+    const change = Math.round(state.meter - before); 
+    const sign = change>0?"📈":"📉"; 
+    
+    if(change!==0){ 
+      state.chat.push({who:'system', text:`${sign} METER: ${change>0?'+':''}${change} (now ${Math.round(state.meter)}/${effectiveThreshold})`}); 
+    }
+    
+    // Show what influenced the result
+    if(Math.abs(change) > 0) {
+      let breakdown = [];
+      if(rule.deltaBonus > 0) breakdown.push(`+${rule.deltaBonus.toFixed(1)} bonus`);
+      if(rule.deltaPenalty > 0) breakdown.push(`-${rule.deltaPenalty.toFixed(1)} penalty`);
+      if(aligns) breakdown.push(`tactic aligned`);
+      if(usedNow.length > 0) breakdown.push(`evidence: ${usedNow.reduce((s,e)=>s+e.strength,0)}/5`);
+      if(breakdown.length > 0) {
+        state.chat.push({who:'system', text:`⚖️ ${breakdown.join(' • ')}`});
+      }
+    }
+    
 state.lastChange[state.idx] = change;
 if (change <= 0) { state.fails[state.idx] = (state.fails[state.idx] || 0) + 1; }
 else { state.fails[state.idx] = 0; }
@@ -1742,7 +1821,6 @@ if (state.fails[state.idx] === 2 || state.fails[state.idx] === 4) {
 state.selected = [];
 els.input.value = '';
 
-    const effectiveThreshold = juror.threshold + DIFFICULTY.thresholdBoost + Math.floor((state.strikes||0)/2)*DIFFICULTY.strikeThresholdBoostPer2;
     if(state.strikes>=DIFFICULTY.maxStrikes){ return gameOver('Too many strikes (arguments aided the defense).'); }
 // Low-patience flavor ping (last 3 steps)
 {
@@ -1796,6 +1874,17 @@ document.addEventListener('DOMContentLoaded', () => {
   on('btn-clear-sel', 'click', ()=>{ state.selected=[]; renderSelected(); });
   on('btn-send', 'click', send);
   on('btn-reset', 'click', reset);
+  
+  // Allow Enter key (with Shift) to send
+  const inputEl = document.getElementById('input');
+  if(inputEl) {
+    inputEl.addEventListener('keydown', (e) => {
+      if(e.key === 'Enter' && e.shiftKey) {
+        e.preventDefault();
+        send();
+      }
+    });
+  }
 
   on('ev-search', 'input', ()=>renderEvidence());
   on('ev-clear', 'click', ()=>{
