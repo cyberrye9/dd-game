@@ -1402,25 +1402,25 @@ function openingLine(j){
 let state;
 const els = {
   // left panel
-  evList: document.getElementById('evidence-list'),
-  evSearch: document.getElementById('ev-search'),
+  get evList() { return document.getElementById('evidence-list'); },
+  get evSearch() { return document.getElementById('ev-search'); },
   // composer
-  selectedEv: document.getElementById('selected-ev'),
-  input: document.getElementById('input'),
-  tactic: document.getElementById('tactic'),
+  get selectedEv() { return document.getElementById('selected-ev'); },
+  get input() { return document.getElementById('input'); },
+  get tactic() { return document.getElementById('tactic'); },
   // main area
-  chat: document.getElementById('chat'),
-  jurorAvatar: document.getElementById('juror-avatar'),
-  jurorName: document.getElementById('juror-name'),
-  jurorDesc: document.getElementById('juror-desc'),
-  jurorGuidance: document.getElementById('juror-guidance'),
-  meterBar: document.getElementById('meter-bar'),
-  turnsBadge: document.getElementById('turns-badge'),
-  strikesBadge: document.getElementById('strikes-badge'),
-  progress: document.getElementById('progress'),
+  get chat() { return document.getElementById('chat'); },
+  get jurorAvatar() { return document.getElementById('juror-avatar'); },
+  get jurorName() { return document.getElementById('juror-name'); },
+  get jurorDesc() { return document.getElementById('juror-desc'); },
+  get jurorGuidance() { return document.getElementById('juror-guidance'); },
+  get meterBar() { return document.getElementById('meter-bar'); },
+  get turnsBadge() { return document.getElementById('turns-badge'); },
+  get strikesBadge() { return document.getElementById('strikes-badge'); },
+  get progress() { return document.getElementById('progress'); },
   // case breakdown
-  caseTimeline: document.getElementById('case-timeline'),
-  caseFacts: document.getElementById('case-facts'),
+  get caseTimeline() { return document.getElementById('case-timeline'); },
+  get caseFacts() { return document.getElementById('case-facts'); },
 };
 function loadState(){
   // If you don’t actually want persistence yet, keep it simple:
@@ -1684,12 +1684,6 @@ function generateResponse(userText, selectedIds, juror, meter, tacticKey){
     if(TACTICS[tactic]?.extra?.doubtPenalty && clas.doubt>0.35){ out.deltaPenalty += 2; }
     return out; 
   }
-
-  // Cached DOM elements
-  const els = {
-    get input() { return document.getElementById('input'); },
-    get evSearch() { return document.getElementById('ev-search'); }
-  };
 
   function send(){
     if(state.gameOver) return;
