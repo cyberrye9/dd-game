@@ -290,6 +290,17 @@ header .foot{
 .juror-card h4{ color:#F7F2E7; }
 .juror-card p{ color: rgba(247,242,231,0.82); }
 
+  /* JUROR NUMBER LABEL */
+  .juror-number {
+    font-family: 'Oswald', sans-serif;
+    font-weight: 700;
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--accent);
+    margin-bottom: 8px;
+  }
+
   /* AVATAR - BOLD CIRCLE */
   .avatar {
     width: 60px;
@@ -489,22 +500,31 @@ header .foot{
   }
 
   .dot {
-    width: 18px;
-    height: 18px;
+    width: 32px;
+    height: 32px;
     background: var(--bg-white);
     border: 3px solid var(--text-dark);
     border-radius: 50%;
     transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text-dark);
   }
 
   .dot.win {
     background: var(--accent-green);
     border-color: var(--accent-green);
+    color: var(--bg-white);
   }
 
   .dot.cur {
     background: var(--primary);
     border-color: var(--primary);
+    color: var(--bg-white);
     box-shadow: 0 0 0 3px rgba(30, 58, 95, 0.3);
     animation: pulse-dot 2s infinite;
   }
@@ -1046,6 +1066,7 @@ header .foot{
         <div class="juror-card">
           <div class="avatar" id="juror-avatar">J1</div>
           <div>
+            <div class="juror-number" id="juror-number">JUROR #1</div>
             <h2 id="juror-name">Juror Name</h2>
             <div class="small" id="juror-desc"></div>
             <div class="meter" title="Persuasion"><span id="meter-bar"></span></div>
@@ -1422,6 +1443,7 @@ const els = {
   // main area
   get chat() { return document.getElementById('chat'); },
   get jurorAvatar() { return document.getElementById('juror-avatar'); },
+  get jurorNumber() { return document.getElementById('juror-number'); },
   get jurorName() { return document.getElementById('juror-name'); },
   get jurorDesc() { return document.getElementById('juror-desc'); },
   get jurorGuidance() { return document.getElementById('juror-guidance'); },
@@ -1444,8 +1466,10 @@ function loadState(){
 
 function renderJuror(){
   const j = JURORS[state.idx];
+  const jurorNum = state.idx + 1;
 
-  if (els.jurorAvatar) els.jurorAvatar.textContent = (state.idx + 1);
+  if (els.jurorAvatar) els.jurorAvatar.textContent = jurorNum;
+  if (els.jurorNumber) els.jurorNumber.textContent = `JUROR #${jurorNum}`;
   if (els.jurorName) els.jurorName.textContent = `${j.name} (${j.age})`;
   if (els.jurorDesc) els.jurorDesc.textContent = `${j.archetype} • ${DIFFICULTY.name}`;
   if (els.jurorGuidance) els.jurorGuidance.textContent = guidanceFor(j);
@@ -1464,7 +1488,16 @@ function renderJuror(){
   if (els.strikesBadge) els.strikesBadge.textContent = `Strikes: ${state.strikes || 0}/${DIFFICULTY?.maxStrikes || 3}`;
 }
 
-function renderProgress(){ els.progress.innerHTML=''; JURORS.forEach((j,i)=>{ const d=document.createElement('div'); d.className='dot'+(state.persuaded[i]?' win':'')+(state.idx===i?' cur':''); d.title=`${j.name}`; els.progress.appendChild(d); }); }
+function renderProgress(){ 
+  els.progress.innerHTML=''; 
+  JURORS.forEach((j,i)=>{ 
+    const d=document.createElement('div'); 
+    d.className='dot'+(state.persuaded[i]?' win':'')+(state.idx===i?' cur':''); 
+    d.title=`Juror #${i+1}: ${j.name}`; 
+    d.textContent = i+1; // Show juror number inside the dot
+    els.progress.appendChild(d); 
+  }); 
+}
   function renderChat(){ 
     if(!els.chat) return;
     els.chat.innerHTML=''; 
